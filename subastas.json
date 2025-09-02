@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "nombre": "Bora 1.8T",
+    "categoria": "Automotores",
+    "costo_inicial": 12000000,
+    "descripcion": "Polemico pero confiable",
+    "estado": "activa",
+    "tiempo_restante": 300,
+    "monto_actual": 0,
+    "ganador": null
+  },
+  {
+    "id": 2,
+    "nombre": "Monalisa",
+    "categoria": "Arte",
+    "costo_inicial": 100000000,
+    "descripcion": "Obra de arte",
+    "estado": "activa",
+    "tiempo_restante": 500,
+    "monto_actual": 0,
+    "ganador": null
+  },
+  {
+    "id": 23,
+    "nombre": "Pastillas de cafeina",
+    "categoria": "Farmacos",
+    "costo_inicial": 5000,
+    "descripcion": "Capsula de cafeina - 200mg",
+    "estado": "activa",
+    "tiempo_restante": 500,
+    "monto_actual": 0,
+    "ganador": null
+  }
+]
