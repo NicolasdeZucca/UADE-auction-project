@@ -8,29 +8,55 @@ PATH_USUARIOS = "usuarios.json"
 PATH_SUBASTAS = "subastas.json"
 PATH_PUJAS = "pujas.json"
 
+__MEMORY__ = {
+    PATH_USUARIOS: [{'id': 1, 'nombre': 'admin', 'password': '123'},
+                    {'id': 2, 'nombre': 'Nico', 'password': '123'},
+                    {'id': 3, 'nombre': 'Pepe', 'password': '456'},
+                    {'id': 4, 'nombre': 'Sofia', 'password': '789'},
+                    {'id': 5, 'nombre': 'Andrea', 'password': '9999'}],
+    PATH_SUBASTAS: [{'categoria': 'Automotores',
+                     'costo_inicial': 12000000,
+                     'descripcion': 'Polemico pero confiable',
+                     'estado': 'activa',
+                     'ganador': None,
+                     'id': 1,
+                     'monto_actual': 0,
+                     'nombre': 'Bora 1.8T',
+                     'tiempo_restante': 300},
+                    {'categoria': 'Arte',
+                     'costo_inicial': 100000000,
+                     'descripcion': 'Obra de arte',
+                     'estado': 'activa',
+                     'ganador': None,
+                     'id': 2,
+                     'monto_actual': 0,
+                     'nombre': 'Monalisa',
+                     'tiempo_restante': 500},
+                    {'categoria': 'Farmacos',
+                     'costo_inicial': 5000,
+                     'descripcion': 'Capsula de cafeina - 200mg',
+                     'estado': 'activa',
+                     'ganador': None,
+                     'id': 23,
+                     'monto_actual': 0,
+                     'nombre': 'Pastillas de cafeina',
+                     'tiempo_restante': 500}],
+    PATH_PUJAS: [],
+}
+
 # Funciones de utilidades
 
 
 def leer_archivo(ruta):
-    """
-    Abre un archivo JSON y retorna su contenido.
-    return: '[]' si la ruta no existe
-    """
-    if not os.path.exists(ruta):
-        return []
-
-    with open(ruta, "r", encoding="utf-8") as f:
-        return json.load(f)
+    if ruta in __MEMORY__:
+        data = __MEMORY__[ruta]
+        return list(data) if isinstance(data, list) else data
+    return []
 
 
 def escribir_archivo(ruta, datos):
-    """
-    Escribe los datos proporcionados por la funcion registrar_usuario en el archivo JSON especifico.
-    Parametros: la ruta del archivo a escribir, el dato
-    return: sin return
-    """
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump(datos, f, indent=2)
+    __MEMORY__[ruta] = datos
+
 
 # Funciones de usuarios
 
@@ -112,11 +138,11 @@ def obtener_archivo(path):
 #     subastas = leer_archivo(path)
 #     if not isinstance(subastas, list):
 #         return []
-
+#
 #     for sub in subastas:
 #         subastas_activas.append(
 #             {sub.get('nombre'), sub.get('id'), sub.get('costo_inicial')})
-
+#
 #     print(subastas_activas)
 #     print("Si desea participar de alguna subasta elija la opcion numero 4 en el menu principal\n")
 #     return subastas_activas
@@ -182,6 +208,7 @@ def registrar_puja():
 
 
 # Funcion main principal
+
 
 def main():
     while True:
