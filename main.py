@@ -12,6 +12,9 @@ SUBASTAS = [
     {"id": 3, "nombre": "Subasta de tecnología", "costo_inicial": 300}
 ]
 
+"""
+Prueba de Commmmit (xfa un 9 profe <3)
+"""
 
 PUJAS = []
 
