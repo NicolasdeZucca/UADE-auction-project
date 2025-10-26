@@ -1,6 +1,4 @@
 from functools import reduce
-import os
-import json
 
 USUARIO_ACTUAL = None
 
@@ -13,18 +11,6 @@ SUBASTAS = [
 ]
 
 PUJAS = []
-
-
-def leer_archivo(ruta):
-    """
-    Abre un archivo JSON y retorna su contenido.
-    return: '[]' si la ruta no existe
-    """
-    if not os.path.exists(ruta):
-        return []
-
-    with open(ruta, "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def registrar_usuario(nombre, password):
