@@ -1,6 +1,13 @@
 import json
 import os
+from functools import reduce
 from datetime import datetime
+import re
+from datetime import datetime
+
+# archivos
+from validaciones.validaciones import validarNombreContrasena, usuarioExiste, validarCredenciales, validarIDSubasta
+from utilidades.utils import generateID, leer_archivo, escribir_archivo
 
 # --- Rutas de archivos (en la misma carpeta que este .py) ---
 USUARIO_ACTUAL = None
@@ -8,88 +15,69 @@ PATH_USUARIOS = "usuarios.json"
 PATH_SUBASTAS = "subastas.json"
 PATH_PUJAS = "pujas.json"
 
-# Funciones de utilidades
-
-
-def leer_archivo(ruta):
-    """
-    Abre un archivo JSON y retorna su contenido.
-    return: '[]' si la ruta no existe
-    """
-    if not os.path.exists(ruta):
-        return []
-
-    with open(ruta, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def escribir_archivo(ruta, datos):
-    """
-    Escribe los datos proporcionados por la funcion registrar_usuario en el archivo JSON especifico.
-    Parametros: la ruta del archivo a escribir, el dato
-    return: sin return
-    """
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump(datos, f, indent=2)
-
 # Funciones de usuarios
-
-
 def registrar_usuario(nombre, password):
     """
-    Agrega el nombre a usuarios.json si no existe
-    parametros: el nombre a registrar
-    return (boolean, mensaje)
+    Agrega / registra el nombre de usuario en 'usuarios.json' si no existe
+
+    Args:
+        nombre (str): nombre de usuario
+        password (str): contraseña del usuario
+
+    Returns:
+        boolean, str: True si el usuario fue cargado + msj. 
+                      False si hubo errores + msj de error.
     """
-    # Se validan que el usuario y contraseña no sean vacios
-    nombre_valido = nombre.strip()
-    password_valida = password.strip()
+    global USUARIO_ACTUAL
 
-    if not nombre_valido or not password_valida:
-        return False, print("El usuario o contraseña no pueden estar vacios.\n")
+    ok, msj, nombre_valido, password_valida = validarNombreContrasena(
+        nombre, password)
+    if not ok:
+        return (False, msj)
 
-    usuarios = leer_archivo(PATH_USUARIOS)
+    try:
+        
+        usuarios = leer_archivo(PATH_USUARIOS)
+        if usuarioExiste(nombre_valido, usuarios):
+            return
 
-    # Evitamos duplicados sin importar mayúsculas/minúsculas
-    nombres_existentes = []
-    for usuario in usuarios:
-        if isinstance(usuario, str):
-            nombres_existentes.append(usuario.lower())
+        
+        nuevo = {
+            "id": generateID(),
+            "nombre": nombre_valido,
+            "password": password_valida
+        }
 
-    if nombre_valido.lower() in nombres_existentes:
-        return False, print(f"El usuario '{nombre_valido}' ya existe.")
-
-    nuevo = {
-        "id": len(usuarios) + 1,
-        "nombre": nombre,
-        "password": password
-    }
-    usuarios.append(nuevo)
-    escribir_archivo(PATH_USUARIOS, usuarios)
-    return True, print(f"Usuario {nombre_valido} registrado.\n")
+        usuarios.append(nuevo)
+        escribir_archivo(PATH_USUARIOS, usuarios)
+        USUARIO_ACTUAL = nuevo
+        return (True, print(f"Usuario '{nombre_valido}' registrado (ID: {nuevo['id']}).\n"))
+    
+    except Exception as e:
+        return (False, print("Error en registrar usuario: ", e))
 
 
-def login():
+def login(nombre, password):
     """
-    Funcion que simula un login de usuarios
-    parametros: usuario y contraseña
-    return boolean y el usuario logueado
+    Funcion de login de usuarios.
+
+    Returns:
+        boolean, str: True  + el usuario logueado
+                      False + mensaje de error
     """
     global USUARIO_ACTUAL
 
     if USUARIO_ACTUAL:
-        return True, print(f"Se encuentra registrado el usuario {USUARIO_ACTUAL['nombre']}")
-
-    nombre = input("Ingrese su nombre de usuario: ")
-    password = input("Ingrese su contraseña: ")
+        return True, print(f"Se encuentra logueado el usuario {USUARIO_ACTUAL['nombre']}")
 
     usuarios = leer_archivo(PATH_USUARIOS)
-    for user in usuarios:
-        if user["nombre"].lower() == nombre.lower() and user["password"] == password:
-            USUARIO_ACTUAL = user['nombre']
-            return True, print(f"bienvenido {user['nombre']}")
-
-    return False, "Usuario o contraseña incorrectos."
+    ok, user = validarCredenciales(nombre, password, usuarios)
+    if ok:
+        USUARIO_ACTUAL = user
+        return (True, f"Usuario {user['nombre']}logueado")
+    
+    
+    return False, print("Usuario o contraseña incorrectos.")
 
 
 def obtener_archivo(path):
@@ -124,26 +112,54 @@ def obtener_archivo(path):
 
 def listar_subastas():
     """
-    Muestra ID, nombre y costo inicial de cada subasta disponible
-    retorna la lista de subastas
+    listar_subastas muestra ID, nombre y costo inicial de cada subasta disponible
+    y las muestra por pantalla
+
+    Returns:
+        list: lista de subastas
     """
     subastas = leer_archivo(PATH_SUBASTAS)
+    
+    if not subastas:
+        print("No hay subastas disponibles. \n")
+        return []
 
     print("\nSubastas disponibles:")
     for sub in subastas:
-        print(f"subasta: {sub.get('id')}")
-        print(f"nombre: {sub.get('nombre')}")
-        print(f"Costo_inicial: {sub.get('costo_inicial')}")
+        print("-------------------------------------------")
+        print(f"Subasta ID: {sub.get('id')}")
+        print(f"Nombre: {sub.get('nombre')}")
+        print(f"Costo inicial: {sub.get('costo_inicial')}")
+        print("-------------------------------------------")
         print()
 
     return subastas
 
 
-def elegir_subasta(subastas):
+def elegir_subasta():
+    """
+    elegir_subasta Pide al usuario un ID de subasta y devuelve la subasta elegida.
+    Si elige algo inválido, vuelve a pedir.
+
+    Args:
+        subastas (list): lista de subastas existentes.
+    """
+    subastas = leer_archivo(PATH_SUBASTAS)
+
     while True:
-        id_seleccionado = int(input("Elija el ID de la subasta : "))
-        # TODO: validar que la subasta tenga ID correcto
-        # TODO: retornar el ID de la subasta para el otro archivo JSON
+        try:
+            id_seleccionado = int(input("Elija el ID de la subasta : "))
+
+        except ValueError:
+            print("Por favor ingrese un numero.\n")
+            return
+
+        ok, resultado = validarIDSubasta(id_seleccionado, subastas)
+        if not ok:
+            print(resultado)
+            continue
+
+        return resultado
 
 
 def registrar_puja():
@@ -152,34 +168,67 @@ def registrar_puja():
     Parametros: el usuario que realiza la puja, el monto que quiere realizar
     return (boolean, mensaje).
     """
+    #TODO: revisar si funciona - incompleta
     # El usuario debe existir
     global USUARIO_ACTUAL
 
     if not USUARIO_ACTUAL:
         return False, print("Registrarse o logueese para participar de una subasta \n")
 
-    # El monto debe ser numérico y positivo
-    monto = float(input("Ingrese un monto a ofertar: "))
-    if monto < 0:
-        return "Debe ingresar un monto mayor a 0"
-
-    # ingresar el id de la subasta
     subastas = listar_subastas()
-    elegir_subasta(subastas)
+    if not subastas:
+        return (False, "No hay subastas disponibles en este momento.")
 
-    # TODO: Debe superar a la mejor puja actual
+    subastaElegida = elegir_subasta()
+    subastaID = subastaElegida.get("id")
 
-    # guarda la nueva puja
+    # El monto debe ser numerico y positivo
+    try:
+        monto = float(input("Ingrese un monto a ofertar: "))
+        while monto < subastaElegida["costo_inicial"]:
+            print("El monto debe ser mayor al precio inicial.")
+            monto = float(input("Ingrese un monto a ofertar nuevamente: "))
+
+    except ValueError:
+        return (False, "El monto debe ser numerico.")
+
     pujas = leer_archivo(PATH_PUJAS)
+    pujas_de_esa_subasta = list(filter(
+        lambda p: isinstance(p, dict) and p.get("subasta_id") == subastaID,
+        pujas
+    ))
 
-    pujas.append({
-        "usuario": USUARIO_ACTUAL,
+    # Determinar la puja maxima actual
+    if pujas_de_esa_subasta:
+        puja_maxima_existente = reduce(
+            lambda acc, p: acc if acc["monto"] >= p["monto"] else p,
+            pujas_de_esa_subasta
+        )
+        monto_actual_maximo = puja_maxima_existente["monto"]
+    else:
+        # si no hubo pujas, el mínimo aceptable es el costo_inicial de la subasta
+        monto_actual_maximo = subastaElegida.get("costo_inicial", 0)
+
+    if monto <= monto_actual_maximo:
+        return (
+            False,
+            f"Tu oferta debe superar la puja actual ({monto_actual_maximo})."
+        )
+
+    # 6. Registrar nueva puja
+    nueva_puja = {
+        "usuario": USUARIO_ACTUAL["nombre"],
         "monto": monto,
-        "timestamp": datetime.now().isoformat(timespec="seconds")
-    })
-    escribir_archivo(PATH_PUJAS, pujas)
-    return True, f"Puja registrada: {USUARIO_ACTUAL} ofertó {monto}."
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "subasta_id": subastaID
+    }
 
+    pujas.append(nueva_puja)
+    ok_write = escribir_archivo(PATH_PUJAS, pujas)
+    if not ok_write:
+        return (False, "Error al guardar la puja en disco.")
+
+    return (True, f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto}.")
 
 # Funcion main principal
 
@@ -187,12 +236,12 @@ def main():
     while True:
         print("Bienvenido a subastas.com")
         print(
-            f"Usuario logueado: {USUARIO_ACTUAL if USUARIO_ACTUAL else 'nadie inicio sesion aún'}")
+           f"Usuario logueado: {USUARIO_ACTUAL['nombre'] if USUARIO_ACTUAL else 'nadie inició sesión aún'}")
         print("1- Registrarse")
         print("2- Iniciar sesion")
         print("3- Ver subastastas disponibles")
         print("4- Registrar puja")
-        print("5- salir")
+        print("5- Salir")
         opcion = int(input("Elija una opción: "))
         print("")
         while opcion < 1 or opcion > 5:
@@ -202,8 +251,12 @@ def main():
             nombre = input("Ingrese un nombre de usuario: ")
             password = input("Ingrese una contraseña: ")
             registrar_usuario(nombre, password)
+
         elif opcion == 2:
-            login()
+            nombre = input("Ingrese su nombre de usuario: ")
+            password = input("Ingrese su contraseña: ")
+            login(nombre, password)
+
         elif opcion == 3:
             listar_subastas()
         elif opcion == 4:
