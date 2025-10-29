@@ -30,8 +30,8 @@ def registrar_usuario(nombre, password):
     """
     global USUARIO_ACTUAL
 
-    ok, msj, nombre_valido, password_valida = validarNombreContrasena(
-        nombre, password)
+    ok, msj, nombre_valido, password_valida = validarNombreContrasena(nombre, password)
+    
     if not ok:
         return (False, msj)
 
