@@ -80,3 +80,31 @@ def test_usuario_no_existe():
     #la funcion en caso de que sea falso devuelve (false, "mensaje") 
     resultado = usuario_existe("Franco", lista_mock)
     assert resultado[0] is False
+#pruebas para validar_credenciales
+def test_credenciales_correctas():
+    """
+    prueba un login exitoso
+    """
+    lista_mock = [{"nombre": "admin", "password": "123"}]
+    #devuelve (true, {diccionario_usuario})
+    resultado = validar_credenciales("admin", "123", lista_mock)
+    assert resultado[0] is True
+    assert resultado[1]["nombre"] == "admin" #verifica que devuelve el usuario
+
+def test_credenciales_pass_incorrecta():
+    """
+    prueba un login con password incorrecta
+    """
+    lista_mock = [{"nombre": "admin", "password": "123"}]
+    #devuelve (false, none)
+    resultado = validar_credenciales("admin", "pass_erroneo", lista_mock)
+    assert resultado[0] is False
+
+def test_credenciales_usuario_incorrecto():
+    """
+    prueba un login con usuario que no existe
+    """
+    lista_mock = [{"nombre": "admin", "password": "123"}] 
+    #devuelve (false, none)
+    resultado = validar_credenciales("user_inventado", "123", lista_mock)
+    assert resultado[0] is False
