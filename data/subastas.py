@@ -81,7 +81,6 @@ def actualizar_subasta(subastaID, montoActual, ganador=None):
     if subasta["ganador"] is None:
         subasta["ganador"] = ganador
  
-    subastas.append(subasta)
     guardar_subastas(subastas)
    
  
