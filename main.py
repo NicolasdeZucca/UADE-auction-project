@@ -128,73 +128,72 @@ def generar_informe():
 
     imprimir=True
     
-    pujas = leer_archivo(PATH_PUJAS) or []
-    subastas = leer_archivo(PATH_SUBASTAS) or []
+    pujas = leer_archivo(PATH_PUJAS)
+    subastas = leer_archivo(PATH_SUBASTAS)
 
-    subastas_map = {s.get("id"): s for s in subastas if s.get("id") is not None}
+    subastasPorId = {subasta.get("id"): subasta for subasta in subastas if subasta.get("id") is not None}
 
-    pujas_por_sub = {}
-    for p in pujas:
-        sid = p.get("subasta_id")
-        if sid is None:
+    pujasPorSubasta = {}
+    for puja in pujas:
+        idDeSubasta = puja.get("subasta_id")
+        if idDeSubasta is None:
             continue
-        pujas_por_sub.setdefault(sid, []).append(p)
+        pujasPorSubasta.setdefault(idDeSubasta, []).append(puja)
 
-    ids = set(subastas_map.keys()) | set(pujas_por_sub.keys())
+    ids = set(subastasPorId.keys()) | set(pujasPorSubasta.keys())
 
-    informes = {}
-    for sid in sorted(ids):
-        sub = subastas_map.get(sid, {})
-        nombre = sub.get("nombre", f"<subasta {sid} sin nombre>")
-        costo_inicial = sub.get("costo_inicial")
+    informe = {}
+    for idDeSubasta in sorted(ids):
+        sub = subastasPorId.get(idDeSubasta, {})
+        nombre = sub.get("nombre", f"<subasta {idDeSubasta} sin nombre>")
+        costoinicial = sub.get("costo_inicial")
 
-        historial = pujas_por_sub.get(sid, [])
+        historial = pujasPorSubasta.get(idDeSubasta, [])
         try:
-            historial_ordenado = sorted(historial, key=lambda x: x.get("timestamp") or "")
+            historialOrdenado = sorted(historial, key=lambda x: x.get("timestamp") or "")
         except Exception:
-            historial_ordenado = historial[:]
+            historialOrdenado = historial[:]
 
         montos = []
-        for pu in historial_ordenado:
-            m = pu.get("monto", 0)
+        for pujaOrdenada in historialOrdenado:
+            monto = pujaOrdenada.get("monto", 0)
             try:
-                montos.append(int(m))
+                montos.append(int(monto))
             except Exception:
                 try:
-                    montos.append(int(float(m)))
+                    montos.append(int(float(monto)))
                 except Exception:
                     continue
-        mayor_puja = max(montos) if montos else 0
-        cantidad = len(historial_ordenado)
+        mayorPuja = max(montos) if montos else 0
+        cantidad = len(historialOrdenado)
 
         informe = {
-            "subasta_id": sid,
+            "subasta_id": idDeSubasta,
             "nombre": nombre,
-            "costo_inicial": costo_inicial,
+            "costo_inicial": costoinicial,
             "cantidad_pujas": cantidad,
-            "mayor_puja": mayor_puja,
-            "historial": historial_ordenado
+            "mayor_puja": mayorPuja,
+            "historial": historialOrdenado
         }
-        informes[sid] = informe
+        informe[idDeSubasta] = informe
 
         if imprimir:
             print("--------------------------------------------------")
-            print(f"Subasta {sid} - {nombre}")
-            print(f"Costo inicial: {costo_inicial}")
+            print(f"Subasta {idDeSubasta} - {nombre}")
+            print(f"Costo inicial: {costoinicial}")
             print(f"Pujas totales: {cantidad}")
-            print(f"Mayor puja: {mayor_puja}")
+            print(f"Mayor puja: {mayorPuja}")
             print("Historial de pujas:")
-            if historial_ordenado:
-                for pu in historial_ordenado:
-                    ts = pu.get("timestamp", "")
-                    usr = pu.get("usuario", pu.get("id_usuario", "<sin usuario>"))
-                    monto = pu.get("monto", 0)
-                    print(f"  - {ts} | {usr} | {monto}")
+            if historialOrdenado:
+                for pujaOrdenada in historialOrdenado:
+                    usr = pujaOrdenada.get("usuario", pujaOrdenada.get("id_usuario", "<sin usuario>"))
+                    monto = pujaOrdenada.get("monto", 0)
+                    print(f"  - {usr} | {monto}")
             else:
                 print("  (No hay pujas registradas para esta subasta)")
             print()
 
-    return informes
+    return informe
  
 # Funcion main principal
 def main():
