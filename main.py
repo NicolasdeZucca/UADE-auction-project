@@ -194,6 +194,16 @@ def generar_informe():
             print()
 
     return informe
+
+def cerrar_sesion():
+    global USUARIO_ACTUAL
+
+    if not USUARIO_ACTUAL:
+        return False, print("No hay un usuario logueado actualmente.")
+
+    else:
+        USUARIO_ACTUAL = None
+        return True, print("...cerrando sesion..."), 
  
 # Funcion main principal
 def main():
@@ -210,11 +220,12 @@ def main():
         print("3- Ver subastastas disponibles")
         print("4- Registrar puja")
         print("5- Generar informe")
-        print("6- Salir")
+        print("6- Cerrar Sesion")
+        print("7- Salir")
         opcion = int(input("Elija una opción: "))
         print("")
-        while opcion < 1 or opcion > 5:
-            opcion = int(input("Elija una opción válida (1-6): "))
+        while opcion < 1 or opcion > 7:
+            opcion = int(input("Elija una opción válida (1-7): "))
  
         if opcion == 1:
             nombre = input("Ingrese un nombre de usuario: ")
@@ -236,12 +247,15 @@ def main():
             generar_informe()
 
         elif opcion == 6:
+            cerrar_sesion()
+            
+        elif opcion == 7:
             print("Saliendo...")
             break
         else:
             if not isinstance(opcion, int):
                 print("Error, debe ingresar un dato numerico válido")
-                opcion = int(input("Elija una opción válida (1-6): "))
+                opcion = int(input("Elija una opción válida (1-7): "))
  
  
 main()
