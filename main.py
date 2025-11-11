@@ -7,8 +7,11 @@
 from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta
 from data.usuarios             import obtener_usuarios, crear_usuario, guardar_usuario
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
+from data.JSONs                import leer_archivo
+from config.config             import PATH_PUJAS, PATH_SUBASTAS
+from data.JSONs                import leer_archivo
+from typing                    import Dict, Any
 from validaciones.validaciones import validarNombreContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
- 
  
  
 # --- Usuario actual logueado ---
@@ -121,7 +124,77 @@ def registrar_puja():
  
     return (True, f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto}.")
  
- 
+def generar_informe():
+
+    imprimir=True
+    
+    pujas = leer_archivo(PATH_PUJAS) or []
+    subastas = leer_archivo(PATH_SUBASTAS) or []
+
+    subastas_map = {s.get("id"): s for s in subastas if s.get("id") is not None}
+
+    pujas_por_sub = {}
+    for p in pujas:
+        sid = p.get("subasta_id")
+        if sid is None:
+            continue
+        pujas_por_sub.setdefault(sid, []).append(p)
+
+    ids = set(subastas_map.keys()) | set(pujas_por_sub.keys())
+
+    informes = {}
+    for sid in sorted(ids):
+        sub = subastas_map.get(sid, {})
+        nombre = sub.get("nombre", f"<subasta {sid} sin nombre>")
+        costo_inicial = sub.get("costo_inicial")
+
+        historial = pujas_por_sub.get(sid, [])
+        try:
+            historial_ordenado = sorted(historial, key=lambda x: x.get("timestamp") or "")
+        except Exception:
+            historial_ordenado = historial[:]
+
+        montos = []
+        for pu in historial_ordenado:
+            m = pu.get("monto", 0)
+            try:
+                montos.append(int(m))
+            except Exception:
+                try:
+                    montos.append(int(float(m)))
+                except Exception:
+                    continue
+        mayor_puja = max(montos) if montos else 0
+        cantidad = len(historial_ordenado)
+
+        informe = {
+            "subasta_id": sid,
+            "nombre": nombre,
+            "costo_inicial": costo_inicial,
+            "cantidad_pujas": cantidad,
+            "mayor_puja": mayor_puja,
+            "historial": historial_ordenado
+        }
+        informes[sid] = informe
+
+        if imprimir:
+            print("--------------------------------------------------")
+            print(f"Subasta {sid} - {nombre}")
+            print(f"Costo inicial: {costo_inicial}")
+            print(f"Pujas totales: {cantidad}")
+            print(f"Mayor puja: {mayor_puja}")
+            print("Historial de pujas:")
+            if historial_ordenado:
+                for pu in historial_ordenado:
+                    ts = pu.get("timestamp", "")
+                    usr = pu.get("usuario", pu.get("id_usuario", "<sin usuario>"))
+                    monto = pu.get("monto", 0)
+                    print(f"  - {ts} | {usr} | {monto}")
+            else:
+                print("  (No hay pujas registradas para esta subasta)")
+            print()
+
+    return informes
  
 # Funcion main principal
 def main():
@@ -137,11 +210,12 @@ def main():
         print("2- Iniciar sesion")
         print("3- Ver subastastas disponibles")
         print("4- Registrar puja")
-        print("5- Salir")
+        print("5- Generar informe")
+        print("6- Salir")
         opcion = int(input("Elija una opción: "))
         print("")
         while opcion < 1 or opcion > 5:
-            opcion = int(input("Elija una opción válida (1-5): "))
+            opcion = int(input("Elija una opción válida (1-6): "))
  
         if opcion == 1:
             nombre = input("Ingrese un nombre de usuario: ")
@@ -158,14 +232,17 @@ def main():
  
         elif opcion == 4:
             registrar_puja()
- 
+
         elif opcion == 5:
+            generar_informe()
+
+        elif opcion == 6:
             print("Saliendo...")
             break
         else:
             if not isinstance(opcion, int):
                 print("Error, debe ingresar un dato numerico válido")
-                opcion = int(input("Elija una opción válida (1-5): "))
+                opcion = int(input("Elija una opción válida (1-6): "))
  
  
 main()
