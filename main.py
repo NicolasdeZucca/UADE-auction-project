@@ -126,6 +126,10 @@ def registrar_puja():
  
 def generar_informe():
 
+    """
+    Funcion que genera un informe de las subastas existentes.
+    Parametros: Los registros en los archivos JSON de las subastas y sus datos (ID, VALOR INICIAL y PUJA MAXIMA)
+    """
     imprimir=True
     
     pujas = leer_archivo(PATH_PUJAS)
@@ -248,7 +252,7 @@ def main():
 
         elif opcion == 6:
             cerrar_sesion()
-            
+
         elif opcion == 7:
             print("Saliendo...")
             break
