@@ -16,12 +16,15 @@ def leer_archivo(ruta):
         List: lista mostrando los datos del archivo
     """
     if not os.path.exists(ruta):
+        with open(ruta, "w", encoding="utf-8") as f:
+            json.dump([], f, indent=4)
         return []
+
 
     try:
 
         rutaAbs = os.path.join(os.getcwd(),ruta)
-        with open(rutaAbs, "r", encoding="utf-8") as f:
+        with open(ruta, "r", encoding="utf-8") as f:
             data = json.load(f)
     
     except (json.JSONDecodeError, FileNotFoundError):
@@ -46,7 +49,7 @@ def escribir_archivo(ruta, datos):
     try:
 
         rutaAbs = os.path.join(os.getcwd(),ruta)
-        with open(rutaAbs, "w", encoding="utf-8") as f:
+        with open(ruta, "w", encoding="utf-8") as f:
             json.dump(datos, f, indent=4)
             return True
 

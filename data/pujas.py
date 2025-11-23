@@ -13,7 +13,7 @@ def obtener_pujas():
  
 def guardar_puja(puja):
     escribir_archivo(PATH_PUJAS, puja)
- 
+    
  
 def registrar_usuario_puja(user_id, nombre, monto, subasta_id):
  

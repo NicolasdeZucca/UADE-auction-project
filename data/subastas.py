@@ -4,7 +4,7 @@
  
 from config.config import PATH_SUBASTAS
 from data.JSONs import leer_archivo, escribir_archivo
- 
+from utilidades.utils import pedir_entero
 from validaciones.validaciones import validar_id_subasta
  
  
@@ -52,10 +52,15 @@ def elegir_subasta():
         subastas (list): lista de subastas existentes.
     """
     subastas = leer_archivo(PATH_SUBASTAS)
+    
+    if not subastas: 
+        print("No hay subastas disponibles. \n")
+        return None
  
     while True:
         try:
             id_seleccionado = int(input("Elija el ID de la subasta : "))
+            
  
         except ValueError:
             print("Por favor ingrese un numero.\n")
@@ -63,9 +68,10 @@ def elegir_subasta():
  
         ok, resultado = validar_id_subasta(id_seleccionado, subastas)
         if not ok:
-            print(resultado)
-            return False
- 
+            print("ERROR: No existe una subasta con ese ID.\n")
+            continue
+            
+        print(f"Subasta seleccionada: {resultado['nombre']} (ID: {resultado['id']})\n")
         return resultado
  
  

@@ -1,3 +1,6 @@
+# pylint: disable=C0103
+# pylint:disable=C0303
+
 """
     Este modulo representa la estructura básica de la aplicación.
     Proporciona un menu interactivo para el usuario y se realizan
@@ -9,6 +12,7 @@ from data.usuarios             import obtener_usuarios, crear_usuario, guardar_u
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
 from config.config             import PATH_PUJAS, PATH_SUBASTAS
+from utilidades.utils          import pedir_entero
 from data.JSONs                import leer_archivo
 from typing                    import Dict, Any
 from validaciones.validaciones import validarNombreContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
@@ -96,7 +100,10 @@ def registrar_puja():
         return (False, "No hay subastas disponibles en este momento.")
  
     subasta_elegida = elegir_subasta()
-    subasta_id = subasta_elegida.get("id")
+    if not subasta_elegida:
+        return False, "No se pudo elegir una subasta."
+
+    subasta_id = subasta_elegida["id"]
  
     # El monto debe ser numerico y positivo
     try:
@@ -218,7 +225,7 @@ def main():
     while True:
         print("Bienvenido a subastas.com")
         print(
-           f"Usuario logueado: {USUARIO_ACTUAL['nombre'] if USUARIO_ACTUAL else 'nadie inició sesión aún'}")
+           f"Usuario logueado: {USUARIO_ACTUAL['nombre'] if USUARIO_ACTUAL else 'nadie inició sesión aún'} \n")
         print("1- Registrarse")
         print("2- Iniciar sesion")
         print("3- Ver subastastas disponibles")
@@ -226,7 +233,7 @@ def main():
         print("5- Generar informe")
         print("6- Cerrar Sesion")
         print("7- Salir")
-        opcion = int(input("Elija una opción: "))
+        opcion = pedir_entero("Elija una opción (1-7): ", minimo=1, maximo=7)
         print("")
         while opcion < 1 or opcion > 7:
             opcion = int(input("Elija una opción válida (1-7): "))
