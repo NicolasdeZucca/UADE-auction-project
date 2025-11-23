@@ -20,7 +20,8 @@ def leer_archivo(ruta):
 
     try:
 
-        with open(ruta, "r", encoding="utf-8") as f:
+        rutaAbs = os.path.join(os.getcwd(),ruta)
+        with open(rutaAbs, "r", encoding="utf-8") as f:
             data = json.load(f)
     
     except (json.JSONDecodeError, FileNotFoundError):
@@ -43,7 +44,9 @@ def escribir_archivo(ruta, datos):
         datos (_type_): _description_
     """
     try:
-        with open(ruta, "w", encoding="utf-8") as f:
+
+        rutaAbs = os.path.join(os.getcwd(),ruta)
+        with open(rutaAbs, "w", encoding="utf-8") as f:
             json.dump(datos, f, indent=4)
             return True
 
