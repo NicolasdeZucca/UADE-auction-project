@@ -108,3 +108,29 @@ def test_credenciales_usuario_incorrecto():
     #devuelve (false, none)
     resultado = validar_credenciales("user_inventado", "123", lista_mock)
     assert resultado[0] is False
+#pruebas para validar monto subasta
+def test_monto_subasta_cero_es_invalido():
+    """
+    prueba que un monto de 0 es rechazado
+    """
+    subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
+    resultado = validar_monto_subasta(0, subasta_mock)
+    assert resultado[0] is False #devuelve falso si el monto es 0
+
+def test_monto_subasta_valido_sobre_costo_inicial():
+    """
+    prueba una oferta VALIDA cuando la subasta esta en 0
+    """
+    subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
+    resultado = validar_monto_subasta(150, subasta_mock)
+    assert resultado[0] is True #devuelve verdadero si el monto es valido
+    assert resultado[1] == 150 
+
+def test_monto_subasta_valido_sobre_monto_actual():
+    """
+    prueba una oferta valida sobre una puja anterior
+    """
+    subasta_mock = {"costo_inicial": 100, "monto_actual": 200}
+    resultado = validar_monto_subasta(250, subasta_mock)
+    assert resultado[0] is True
+    assert resultado[1] == 250
