@@ -35,9 +35,7 @@ def mostrar_subastas():
         print(f"Costo inicial: {sub.get('costo_inicial')}")
         print(f"Puja actual: {sub.get('monto_actual')}")
         print("-------------------------------------------\n")
-
-    input("Presione 'enter' para volver al menu principal")
-    print()
+    
     return subastas
  
  

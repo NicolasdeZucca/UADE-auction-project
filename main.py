@@ -117,20 +117,16 @@ def registrar_puja():
     Parametros: el usuario que realiza la puja, el monto que quiere realizar
     return (boolean, mensaje).
     """
-   
-    # El usuario debe existir
-    global USUARIO_ACTUAL
- 
-    if not USUARIO_ACTUAL:
-        return False, print("Registrarse o logueese para participar de una subasta \n")
  
     subastas = mostrar_subastas()
     if not subastas:
-        return (False, "No hay subastas disponibles en este momento.")
+        print("No hay subastas disponibles en este momento.")
+        return False
  
     subasta_elegida = elegir_subasta()
     if not subasta_elegida:
-        return False, "No se pudo elegir una subasta."
+        print("No se pudo elegir una subasta.")
+        return False
 
     subasta_id = subasta_elegida["id"]
  
@@ -141,11 +137,13 @@ def registrar_puja():
        
         ok, monto_validado= validar_monto_subasta(monto, subasta_elegida)
         if not ok:
-            return (False, "Error, algo salio mal")
+            print("Error, algo salio mal")
+            return False
  
  
     except ValueError:
-        return (False, "El monto debe ser numerico.")
+        print("El monto debe ser numerico.")
+        return False
  
     pujas = obtener_pujas()
     user_id = USUARIO_ACTUAL["id"]
@@ -156,9 +154,11 @@ def registrar_puja():
     guardar_puja(pujas)
     actualizar_subasta(subasta_id, monto_validado, user_nombre)
     if not ok:
-        return (False, "Error al guardar la puja en disco.")
- 
-    return (True, f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto}.")
+        print("Error al guardar la puja en disco.")
+        return False
+    
+    print(f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto}.")
+    return True
  
 def generar_informe():
     """
@@ -304,6 +304,8 @@ def main():
                 if opcion == 1:
                     print()
                     mostrar_subastas()
+                    input("Presione 'enter' para volver al menu principal")
+                    print()
         
                 elif opcion == 2:
                     print()
