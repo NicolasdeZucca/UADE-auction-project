@@ -12,7 +12,7 @@ def generate_ID():
     """
     usuarios = leer_archivo(PATH_USUARIOS)
     id = random.randint(1000,10000)
-    idUsuarios = [user["ID"] for user in usuarios]
+    idUsuarios = [user["id"] for user in usuarios]
     while True:
         if id in idUsuarios:
             id = random.randint(1000,10000)
