@@ -81,7 +81,7 @@ def validarNombreSubasta(nombre):
                      True si el parametro cumple con las reglas.
     """
 
-    nombre_regex = r"^(?=.*[a-zA-Z])[A-Za-z0-9](?:[A-Za-z0-9 ]{1,48}[A-Za-z0-9])?$"
+    nombre_regex = r"^(?=.*[a-zA-Z])[A-Za-z0-9](?:[A-Za-z0-9 ]{3,48}[A-Za-z0-9])?$"
 
     if not re.fullmatch(nombre_regex, nombre):
         print("Nombre inválido. Debe tener 3-50 caracteres, solo letras / numeros\n")

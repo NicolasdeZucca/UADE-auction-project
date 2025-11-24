@@ -2,10 +2,11 @@
     Modulo de subastas
 """
  
-from config.config import PATH_SUBASTAS
-from data.JSONs import leer_archivo, escribir_archivo
-from utilidades.utils import pedir_entero
+from config.config             import PATH_SUBASTAS
+from data.JSONs                import leer_archivo, escribir_archivo
+from utilidades.utils          import pedir_entero
 from validaciones.validaciones import validar_id_subasta, validarNombreSubasta, validarNombreCategoria, validarDescSubasta
+from datetime                  import datetime, timedelta
 import random
  
  
@@ -132,6 +133,7 @@ def crear_subasta():
                 if validarNombreCategoria(categoria):
                     while True:
                         descripcion = input("Ingrese la descripcion de la subasta (y 'atras' para volver a ingresar la categoria o 'salir' para volver al menu de administrador): ")
+                        print()
 
                         if descripcion.strip().lower() == "salir":
                             print("Volviendo al menu de administrador...\n")
@@ -142,7 +144,40 @@ def crear_subasta():
                             break
 
                         if validarDescSubasta(descripcion):
-                            pass
+                            while True:
+                                precioInicial = pedir_entero("Ingrese el precio inicial de la subasta: ", 1)
+                                print()
+
+                                while True:
+                                    duracionMin = pedir_entero("Ingrese la duracion de la subasta en minutos: ", 10)
+                                    print()
+
+                                    duracionSegundos = duracionMin * 60
+
+                                    ahora = datetime.now()
+
+                                    fechaFin = (ahora+timedelta(seconds=duracionSegundos)).isoformat(timespec="seconds")
+
+                                    idSubasta = generar_id_subasta()
+
+                                    subasta = {
+                                        "id": idSubasta,
+                                        "nombre": nombre,
+                                        "categoria": categoria,
+                                        "costo_inicial" : precioInicial,
+                                        "descripcion" : descripcion,
+                                        "estado" : "activa",
+                                        "fecha_inicio" : str(ahora),
+                                        "fecha_fin" : str(fechaFin),
+                                        "monto_actual" : 0,
+                                        "ganador" : None
+                                    }
+
+                                    subastas.append(subasta)
+                                    guardar_subastas(subastas)
+                                    print(f"Subasta con ID:{idSubasta}\n")
+                                    return
+                            
                         else:
                             continue
 
