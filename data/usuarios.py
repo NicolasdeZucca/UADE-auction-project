@@ -21,7 +21,8 @@ def crear_usuario(nombre, password):
     usuario = {
         "id": generate_ID(),
         "nombre": nombre,
-        "password": password
+        "password": password,
+        "rol": "user"
         }
  
     return usuario

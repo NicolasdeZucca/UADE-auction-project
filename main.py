@@ -281,7 +281,7 @@ def main():
 
         if USUARIO_ACTUAL:
 
-            if USUARIO_ACTUAL["id"] != 1: # Si no es el admin
+            if USUARIO_ACTUAL["rol"] == "user":
                 limpiar()
                 print("--------------")
                 print("MENU PRINCIPAL")
@@ -310,17 +310,21 @@ def main():
                 elif opcion == 2:
                     print()
                     registrar_puja()
+                    input("Presione 'enter' para volver al menu principal")
+                    print()
 
                 elif opcion == 3:
                     print()
                     generar_informe()
+                    input("Presione 'enter' para volver al menu principal")
+                    print()
 
                 elif opcion == 4:
                     print()
                     cerrar_sesion()
             
             else:
-
+                # Si se inicia sesion como admin
                 pass
  
  
