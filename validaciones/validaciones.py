@@ -115,10 +115,7 @@ def validar_id_subasta(idSubasta, subastas):
 
     subasta_elegida = next(filter(lambda s: s.get("id") == idSubasta,subastas),None)
 
-    if subasta_elegida is None:
-        return False
-
-    return True, subasta_elegida
+    return subasta_elegida
 
 
 def validar_monto_subasta(monto, objSubasta):

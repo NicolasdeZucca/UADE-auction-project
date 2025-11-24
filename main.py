@@ -112,15 +112,11 @@ def login():
 def registrar_puja():
     """
     funcion que registra una puja en una subasta
-    Parametros: el usuario que realiza la puja, el monto que quiere realizar
-    return (boolean, mensaje).
+    return (boolean).
     """
  
-    subastas = mostrar_subastas()
-    if not subastas:
-        print("No hay subastas disponibles en este momento.")
-        return False
- 
+    mostrar_subastas()
+     
     subasta_elegida = elegir_subasta()
     if not subasta_elegida:
         print("No se pudo elegir una subasta.")
@@ -130,10 +126,10 @@ def registrar_puja():
  
     # El monto debe ser numerico y positivo
     try:
-        monto = int(input("Ingrese un monto a ofertar: "))
+        monto = pedir_entero("Ingrese un monto a ofertar: ")
  
        
-        ok, monto_validado= validar_monto_subasta(monto, subasta_elegida)
+        ok, monto_validado = validar_monto_subasta(monto, subasta_elegida)
         if not ok:
             print("Error, algo salio mal")
             return False

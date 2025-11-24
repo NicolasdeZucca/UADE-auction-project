@@ -35,8 +35,6 @@ def mostrar_subastas():
         print(f"Costo inicial: {sub.get('costo_inicial')}")
         print(f"Puja actual: {sub.get('monto_actual')}")
         print("-------------------------------------------\n")
-    
-    return subastas
  
  
 def guardar_subastas(subasta):
@@ -53,27 +51,27 @@ def elegir_subasta():
     """
     subastas = leer_archivo(PATH_SUBASTAS)
     
-    if not subastas: 
+    if not subastas:
         print("No hay subastas disponibles. \n")
         return None
  
     while True:
         try:
-            id_seleccionado = int(input("Elija el ID de la subasta : "))
+            id_seleccionado = pedir_entero("Elija el ID de la subasta : ")
             
  
         except ValueError:
-            print("Por favor ingrese un numero.\n")
+            print("Por favor ingrese un numero válido.\n")
             return
  
-        ok, resultado = validar_id_subasta(id_seleccionado, subastas)
-        if not ok:
+        subasta = validar_id_subasta(id_seleccionado, subastas)
+        if not subasta:
             print("ERROR: No existe una subasta con ese ID.\n")
             continue
             
-        print(f"Subasta seleccionada: {resultado['nombre']} (ID: {resultado['id']})\n")
-        return resultado
- 
+        print(f"Subasta seleccionada: {subasta['nombre']} (ID: {subasta['id']})\n")
+        return subasta
+
  
 def actualizar_subasta(subastaID, montoActual, ganador=None):
  
