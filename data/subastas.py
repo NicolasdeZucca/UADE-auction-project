@@ -33,7 +33,11 @@ def mostrar_subastas():
         print(f"Subasta ID: {sub.get('id')}")
         print(f"Nombre: {sub.get('nombre')}")
         print(f"Costo inicial: {sub.get('costo_inicial')}")
-        print(f"Puja actual: {sub.get('monto_actual')}")
+        if sub['monto_actual'] == 0:
+            print("Todavia no hay pujas en esta subasta.")
+        else:
+            print(f"Puja actual: {sub.get('monto_actual')}")
+            print(f"Ganador de puja actual: {sub.get('ganador')}")
         print("-------------------------------------------\n")
  
  
