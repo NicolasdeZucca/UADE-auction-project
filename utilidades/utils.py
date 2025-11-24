@@ -1,4 +1,5 @@
 import random
+import os
  
 def generate_ID():
     """
@@ -40,3 +41,6 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
             continue
 
         return numero
+
+def limpiar():
+    os.system('cls' if os.name == 'nt' else 'clear')

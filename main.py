@@ -12,7 +12,7 @@ from data.usuarios             import obtener_usuarios, crear_usuario, guardar_u
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
 from config.config             import PATH_PUJAS, PATH_SUBASTAS, PATH_USUARIOS
-from utilidades.utils          import pedir_entero
+from utilidades.utils          import pedir_entero, limpiar
 from data.JSONs                import leer_archivo
 from typing                    import Dict, Any
 from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
@@ -91,26 +91,22 @@ def login():
             return False
         
         if validarNombre(nombre):
-            if not usuario_existe(nombre):
-                print(f"El usuario {nombre} no existe, intente nuevamente...\n")
-                continue
+            contrasena = input(f"Ingrese la contrasena de {nombre} para iniciar sesion (o 'salir' para volver atras): ")
+            print()
 
+            if contrasena.strip().lower() == "salir":
+                print("Volviendo al menu de inicio...\n")
+                return False
+
+            ok, usuario = validar_credenciales(nombre, contrasena)
+
+            if ok:
+                USUARIO_ACTUAL = usuario
+                print(f"Felicidades {nombre}, inicio sesion con exito\n")
+                return True
             else:
-                while True:
-                    contrasena = input(f"Ingrese la contrasena de {nombre} para iniciar sesion (o 'salir' para volver atras): ")
-                    print()
-
-                    if contrasena.strip().lower() == "salir":
-                        print("Volviendo al menu de inicio...\n")
-                        return False
-
-                    if validar_credenciales(nombre, contrasena):
-                        ok, usuario = validar_credenciales(nombre, contrasena)
-                        USUARIO_ACTUAL = usuario
-                        print(f"Felicidades {nombre}, inicio sesion con exito\n")
-                        return True
-                    else:
-                        continue
+                print("La contraseña o el usuario son incorretos, intente nuevamente...\n")
+                continue
         else:
             continue
  
@@ -244,13 +240,18 @@ def main():
     Funcion principal del programa.
     Muestra un menu interactivo con opciones para el usuario
     """
-    print("\n\n-------------------------")
-    print("BIENVENIDO A SUBASTAS.COM")
-    print("-------------------------\n")
 
     while True:
         
         if not USUARIO_ACTUAL:
+            limpiar()
+            print("\n\n-------------------------")
+            print("BIENVENIDO A SUBASTAS.COM")
+            print("-------------------------\n")
+
+            print("----------------")
+            print("PAGINA DE INICIO")
+            print("----------------\n")
 
             print("1- Registrarse")
             print("2- Iniciar sesion")
@@ -260,7 +261,6 @@ def main():
             try:
                 while opcion < 1 or opcion > 3:
                     opcion = int(input("Elija una opción válida (1-3): "))
-                    print("\n")
             except Exception as e:
                 print(f"Error: {e} \n")
 
@@ -273,39 +273,53 @@ def main():
                 login()
 
             elif opcion == 3:
+                print()
+                print("Gracias por usar SUBASTAS.COM")
+                print("Saliendo...\n")
+
                 break
 
         if USUARIO_ACTUAL:
 
-            print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
-            print(f"ID: {USUARIO_ACTUAL["id"]}\n")
-            print("1- Ver subastastas disponibles")
-            print("2- Registrar puja")
-            print("3- Generar informe")
-            print("4- Cerrar Sesion")
-        
-            opcion = -1
-            try:
-                while opcion < 1 or opcion > 4:
-                    opcion = int(input("Elija una opción válida (1-4): "))
-            except Exception as e:
-                print(f"Error: {e}\n\n")
-        
-            if opcion == 1:
-                print()
-                mostrar_subastas()
-    
-            elif opcion == 2:
-                print()
-                registrar_puja()
+            if USUARIO_ACTUAL["id"] != 1: # Si no es el admin
+                limpiar()
+                print("--------------")
+                print("MENU PRINCIPAL")
+                print("--------------\n")
 
-            elif opcion == 3:
-                print()
-                generar_informe()
+                print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
+                print(f"ID: {USUARIO_ACTUAL["id"]}\n")
+                print("1- Ver subastastas disponibles")
+                print("2- Registrar puja")
+                print("3- Generar informe")
+                print("4- Cerrar Sesion")
+            
+                opcion = -1
+                try:
+                    while opcion < 1 or opcion > 4:
+                        opcion = int(input("Elija una opción válida (1-4): "))
+                except Exception as e:
+                    print(f"Error: {e}\n")
+            
+                if opcion == 1:
+                    print()
+                    mostrar_subastas()
+        
+                elif opcion == 2:
+                    print()
+                    registrar_puja()
 
-            elif opcion == 4:
-                print()
-                cerrar_sesion()
+                elif opcion == 3:
+                    print()
+                    generar_informe()
+
+                elif opcion == 4:
+                    print()
+                    cerrar_sesion()
+            
+            else:
+
+                pass
  
  
 main()

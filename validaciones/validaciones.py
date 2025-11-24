@@ -62,7 +62,7 @@ def validarContrasena(password):
 
     if not re.fullmatch(pass_regex, password_valida):
         print("Contraseña inválida. Debe tener 6-16 caracteres e incluir: ")
-        print("una mayúscula, una minúscula, un número y un caracter especial.")
+        print("una mayúscula, una minúscula, un número y un caracter especial.\n")
         return False
 
     return True

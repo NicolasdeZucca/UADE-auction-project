@@ -27,15 +27,17 @@ def mostrar_subastas():
         print("No hay subastas disponibles. \n")
         return []
  
-    print("\nSubastas disponibles:")
+    print("\nSubastas disponibles:\n")
     for sub in subastas:
         print("-------------------------------------------")
         print(f"Subasta ID: {sub.get('id')}")
         print(f"Nombre: {sub.get('nombre')}")
         print(f"Costo inicial: {sub.get('costo_inicial')}")
-        print("-------------------------------------------")
-        print()
- 
+        print(f"Puja actual: {sub.get('monto_actual')}")
+        print("-------------------------------------------\n")
+
+    input("Presione 'enter' para volver al menu principal")
+    print()
     return subastas
  
  
