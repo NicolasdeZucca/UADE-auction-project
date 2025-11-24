@@ -243,6 +243,15 @@ def generar_informe():
         print("--------------------------------")
     except Exception as e: 
         print(f"No se pudo leer el archivo generado: {e}")
+def cerrar_sesion():
+    global USUARIO_ACTUAL
+
+    if not USUARIO_ACTUAL:
+        return False, print("No hay un usuario logueado actualmente.")
+
+    else:
+        USUARIO_ACTUAL = None
+        return True, print("...cerrando sesion..."), 
 # Funcion main principal
 def main():
     """
@@ -271,7 +280,7 @@ def main():
             if opcion == 1:
                 print()
                 registrar_usuario()
- 
+
             elif opcion == 2:
                 print()
                 login()
