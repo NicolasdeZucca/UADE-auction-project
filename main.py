@@ -37,16 +37,11 @@ def registrar_usuario():
     """
     global USUARIO_ACTUAL
     
-    try:
-        usuariosExistentes={}
-        nombresUsuarios = []
-        with open(PATH_USUARIOS, "r") as usuarios:
-            usuariosExistentes = json.load(usuarios)
-            for usuario in usuariosExistentes:
-                nombresUsuarios.append(usuario["nombre"])     
-    except Exception as e:
-        print(f"Error: {e}.")
-
+    usuarios = leer_archivo(PATH_USUARIOS)
+    nombresUsuarios = []
+    for usuario in usuarios:
+        nombresUsuarios.append(usuario["nombre"])
+    
     while True:
         nombre = input("Ingrese su nombre de usuario: ")
         if validarNombre(nombre):
@@ -59,9 +54,8 @@ def registrar_usuario():
                     contrasena = input("Ingrese su contrasena: ")
                     if validarContrasena(contrasena):
                         usuario = crear_usuario(nombre, contrasena)
-                        usuariosAgragar = leer_archivo(PATH_USUARIOS)
-                        usuariosAgragar.append(usuario)
-                        guardar_usuario(usuariosAgragar)
+                        usuarios.append(usuario)
+                        guardar_usuario(usuarios)
                         print(f"Usuario creado con exito, su ID es {usuario["id"]}\n")
                         USUARIO_ACTUAL = usuario
                         return True
