@@ -5,16 +5,41 @@
 import re
 
 
-
-def validarNombreContrasena(nombre, password):
+def validarNombre(nombre):
     """
-    Valida que el nombre de usuario y su contraseña cumplan los requisitos.
+    Valida que el nombre de usuario cumpla los requisitos.
 
     Reglas:
     - Nombre:
         * Debe contener letras y/o números
         * Largo entre 3 y 20 caracteres
         * Solo mayusculas, minusculas y numeros.
+
+    Params:
+        nombre (str): nombre del usuario 
+
+    Return:
+        (bool): (es_valido)
+                     True si el parametro cumple con las reglas.
+    """
+
+    # Se eliminan espacios vacíos.
+    nombre_valido = nombre.strip()
+
+    nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
+
+    if not re.fullmatch(nombre_regex, nombre_valido):
+        print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros")
+        return False
+
+    print("Nombre valido.")
+    return True
+
+def validarContrasena(password):
+    """
+    Valida que la contraseña cumpla los requisitos.
+
+    Reglas:
     - Contraseña, al menos:
         * 1 minúscula
         * 1 mayúscula
@@ -23,34 +48,25 @@ def validarNombreContrasena(nombre, password):
         * Largo entre 6 y 16 caracteres
 
     Params:
-        nombre (str): nombre del usuario 
         password (str): contraseña del usuario
 
     Return:
-        (bool, str): (es_valido, mensaje_de_validacion)
-                     True si ambas cosas son válidas
+        (bool): (es_valido)
+                     True si la contraseña cumple los requisitos
                      False si hay algún problema
     """
 
     # Se eliminan espacios vacíos.
-    nombre_valido = nombre.strip()
     password_valida = password.strip()
 
-    nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
     pass_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:<,>.?/|\\~-]).{6,16}$"
 
-    if not re.fullmatch(nombre_regex, nombre_valido):
-        return (False,
-                "Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros", None, None)
-
-
     if not re.fullmatch(pass_regex, password_valida):
-        return (False,
-                "Contraseña inválida. Debe tener 6-16 caracteres e incluir: "
-                "una mayúscula, una minúscula, un número y un caracter especial.", None, None)
+        print("Contraseña inválida. Debe tener 6-16 caracteres e incluir: ")
+        print("una mayúscula, una minúscula, un número y un caracter especial.")
+        return False
 
-
-    return (True, "Usuario y contraseña validos", nombre_valido, password_valida)
+    return True
 
 
 def usuario_existe(nombreUsuario, listaUsuarios):
