@@ -211,51 +211,75 @@ def main():
     Funcion principal del programa.
     Muestra un menu interactivo con opciones para el usuario
     """
+    print("\n\n-------------------------")
+    print("BIENVENIDO A SUBASTAS.COM")
+    print("-------------------------\n\n")
+
     while True:
-        print("Bienvenido a subastas.com")
-        print(
-           f"Usuario logueado: {USUARIO_ACTUAL['nombre'] if USUARIO_ACTUAL else 'nadie inició sesión aún'} \n")
-        print("1- Registrarse")
-        print("2- Iniciar sesion")
-        print("3- Ver subastastas disponibles")
-        print("4- Registrar puja")
-        print("5- Generar informe")
-        print("6- Cerrar Sesion")
-        print("7- Salir")
-        opcion = pedir_entero("Elija una opción (1-7): ", minimo=1, maximo=7)
-        print("")
-        while opcion < 1 or opcion > 7:
-            opcion = int(input("Elija una opción válida (1-7): "))
- 
-        if opcion == 1:
-            nombre = input("Ingrese un nombre de usuario: ")
-            password = input("Ingrese una contraseña: ")
-            registrar_usuario(nombre, password)
- 
-        elif opcion == 2:
-            nombre = input("Ingrese su nombre de usuario: ")
-            password = input("Ingrese su contraseña: ")
-            login(nombre, password)
- 
-        elif opcion == 3:
-            mostrar_subastas()
- 
-        elif opcion == 4:
-            registrar_puja()
+        
+        if not USUARIO_ACTUAL:
 
-        elif opcion == 5:
-            generar_informe()
+            print("1- Registrarse")
+            print("2- Iniciar sesion")
+            print("3- Salir")
 
-        elif opcion == 6:
-            cerrar_sesion()
+            opcion = -1
+            try:
+                while opcion < 1 or opcion > 3:
+                    opcion = int(input("Elija una opción válida (1-3): "))
+                    print("\n\n")
+            except Exception as e:
+                print(f"Error: {e}\n\n")
 
-        elif opcion == 7:
-            print("Saliendo...")
-            break
-        else:
-            if not isinstance(opcion, int):
-                print("Error, debe ingresar un dato numerico válido")
-                opcion = int(input("Elija una opción válida (1-7): "))
+            if opcion == 1:
+                print()
+                nombre = input("Ingrese un nombre de usuario: ")
+                password = input("Ingrese una contraseña: ")
+                registrar_usuario(nombre, password)
+
+                print("\n\n")
+ 
+            elif opcion == 2:
+                print()
+                nombre = input("Ingrese su nombre de usuario: ")
+                password = input("Ingrese su contraseña: ")
+                login(nombre, password)
+                print(f"\nFelicidades {nombre}, usted ingreso con exito.\n\n")
+
+            elif opcion == 3:
+                break
+
+        if USUARIO_ACTUAL:
+
+            print()
+
+            print("1- Ver subastastas disponibles")
+            print("2- Registrar puja")
+            print("3- Generar informe")
+            print("4- Cerrar Sesion")
+        
+            opcion = -1
+            try:
+                while opcion < 1 or opcion > 4:
+                    opcion = int(input("Elija una opción válida (1-4): "))
+            except Exception as e:
+                print(f"Error: {e}\n\n")
+        
+            if opcion == 1:
+                print()
+                mostrar_subastas()
+    
+            elif opcion == 2:
+                print()
+                registrar_puja()
+
+            elif opcion == 3:
+                print()
+                generar_informe()
+
+            elif opcion == 4:
+                print()
+                cerrar_sesion()
  
  
 main()
