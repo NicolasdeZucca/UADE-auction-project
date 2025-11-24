@@ -32,7 +32,6 @@ def validarNombre(nombre):
         print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros")
         return False
 
-    print("Nombre valido.")
     return True
 
 def validarContrasena(password):
