@@ -353,6 +353,19 @@ def main():
                 elif opcion == 2:
                     print()
                     crear_subasta()
+
+                elif opcion == 3:
+                    print()
+                    generar_informe()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+
+                elif opcion == 4:
+                    pass
+
+                elif opcion == 5:
+                    print()
+                    cerrar_sesion()
                 
  
  
