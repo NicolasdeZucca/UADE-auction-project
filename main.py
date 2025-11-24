@@ -11,18 +11,19 @@ from data.subastas             import actualizar_subasta, mostrar_subastas, eleg
 from data.usuarios             import obtener_usuarios, crear_usuario, guardar_usuario
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
-from config.config             import PATH_PUJAS, PATH_SUBASTAS
+from config.config             import PATH_PUJAS, PATH_SUBASTAS, PATH_USUARIOS
 from utilidades.utils          import pedir_entero
 from data.JSONs                import leer_archivo
 from typing                    import Dict, Any
-from validaciones.validaciones import validarNombreContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
+from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
+import json
  
  
 # --- Usuario actual logueado ---
 USUARIO_ACTUAL = None
  
 # Funciones de usuarios
-def registrar_usuario(nombre, password):
+def registrar_usuario():
     """
     Agrega / registra el nombre de usuario en 'usuarios.json' si no existe
  
@@ -35,29 +36,40 @@ def registrar_usuario(nombre, password):
                       False si hubo errores + msj de error.
     """
     global USUARIO_ACTUAL
- 
-    ok, msj, nombre_valido, password_valida = validarNombreContrasena(
-        nombre, password)
-    if not ok:
-        return (False, print(msj))
- 
+    
     try:
- 
-        usuarios = obtener_usuarios()
-        if not usuario_existe(nombre_valido, usuarios):
-            return False, print(f"El usuario {nombre_valido} ya existe")
- 
-        nuevo_usuario = crear_usuario(nombre_valido, password_valida)
-       
- 
-        usuarios.append(nuevo_usuario)
-        guardar_usuario(usuarios)
-        USUARIO_ACTUAL = nuevo_usuario
-        return (True, print(f"Usuario '{nombre_valido}' registrado (ID: {nuevo_usuario['id']}).\n"))
-   
+        usuariosExistentes={}
+        nombresUsuarios = []
+        with open(PATH_USUARIOS, "r") as usuarios:
+            usuariosExistentes = json.load(usuarios)
+            for usuario in usuariosExistentes:
+                nombresUsuarios.append(usuario["nombre"])     
     except Exception as e:
-        return (False, print("Error en registrar usuario: ", e))
- 
+        print(f"Error: {e}.")
+
+    while True:
+        nombre = input("Ingrese su nombre de usuario: ")
+        if validarNombre(nombre):
+            if nombre in nombresUsuarios:
+                print("El nombre de usuario ya existe, intente nuevamente\n")
+                continue
+
+            else:
+                while True:
+                    contrasena = input("Ingrese su contrasena: ")
+                    if validarContrasena(contrasena):
+                        usuario = crear_usuario(nombre, contrasena)
+                        usuariosAgragar = leer_archivo(PATH_USUARIOS)
+                        usuariosAgragar.append(usuario)
+                        guardar_usuario(usuariosAgragar)
+                        print(f"Usuario creado con exito, su ID es {usuario["id"]}\n")
+                        USUARIO_ACTUAL = usuario
+                        return True
+                    else:
+                        continue
+        else:
+            continue
+
  
 def login(nombre, password):
     """
@@ -213,7 +225,7 @@ def main():
     """
     print("\n\n-------------------------")
     print("BIENVENIDO A SUBASTAS.COM")
-    print("-------------------------\n\n")
+    print("-------------------------\n")
 
     while True:
         
@@ -227,17 +239,14 @@ def main():
             try:
                 while opcion < 1 or opcion > 3:
                     opcion = int(input("Elija una opción válida (1-3): "))
-                    print("\n\n")
+                    print("\n")
             except Exception as e:
-                print(f"Error: {e}\n\n")
+                print(f"Error: {e} \n")
 
             if opcion == 1:
                 print()
-                nombre = input("Ingrese un nombre de usuario: ")
-                password = input("Ingrese una contraseña: ")
-                registrar_usuario(nombre, password)
-
-                print("\n\n")
+                registrar_usuario()
+                print("\n")
  
             elif opcion == 2:
                 print()

@@ -22,8 +22,6 @@ def leer_archivo(ruta):
 
 
     try:
-
-        rutaAbs = os.path.join(os.getcwd(),ruta)
         with open(ruta, "r", encoding="utf-8") as f:
             data = json.load(f)
     
@@ -47,8 +45,6 @@ def escribir_archivo(ruta, datos):
         datos (_type_): _description_
     """
     try:
-
-        rutaAbs = os.path.join(os.getcwd(),ruta)
         with open(ruta, "w", encoding="utf-8") as f:
             json.dump(datos, f, indent=4)
             return True

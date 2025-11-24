@@ -29,7 +29,7 @@ def validarNombre(nombre):
     nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
 
     if not re.fullmatch(nombre_regex, nombre_valido):
-        print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros")
+        print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros\n")
         return False
 
     return True
