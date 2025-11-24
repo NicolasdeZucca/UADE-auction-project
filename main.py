@@ -121,7 +121,12 @@ def registrar_puja():
     if not subasta_elegida:
         print("No se pudo elegir una subasta.")
         return False
-
+    
+    if subasta_elegida["ganador"] == USUARIO_ACTUAL["nombre"]:
+        print(f"\n¡Ya eres el mayor postor de esta subasta! (Tu oferta actual: ${subasta_elegida['monto_actual']})")
+        print("No puedes volver a pujar hasta que alguien te supere.\n")
+        return False
+    
     subasta_id = subasta_elegida["id"]
  
     # El monto debe ser numerico y positivo
@@ -133,7 +138,7 @@ def registrar_puja():
         if not monto_validado: 
             return False
         
-         
+        
     except Exception as e:
         print(f"Nadie sabe que paso: {e}")
         return False
