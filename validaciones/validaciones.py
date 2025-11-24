@@ -85,7 +85,7 @@ def usuario_existe(nombreUsuario):
     usuario_encontrado = next((user for user in listaUsuarios if user.get("nombre") == nombreUsuario), False)
 
     if usuario_encontrado:
-        return True, usuario_encontrado
+        return True
     
     return False
 
@@ -109,10 +109,7 @@ def validar_credenciales(nombre:str, contrasena:str):
     # Usamos tuplas para evitar repetidos. Igualmente no deberían existir.
     usuario = next((user for user in listaUsuarios if user.get("nombre") == nombre and user.get("password") == contrasena), False)
 
-    if usuario:
-        return True, usuario
-    
-    return False, None
+    return usuario
 
 def validar_id_subasta(idSubasta, subastas):
 

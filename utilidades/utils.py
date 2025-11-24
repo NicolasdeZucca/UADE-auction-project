@@ -17,9 +17,7 @@ def generate_ID():
         if id in idUsuarios:
             id = random.randint(1000,10000)
         else:
-            break
-
-    return id
+            return id
 
 def pedir_entero(mensaje, minimo=None, maximo=None):
     """
@@ -31,27 +29,30 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
     Devuelve el entero válido.
     """
     while True:
-        entrada = input(mensaje).strip()
+        try:
+            entrada = input(mensaje).strip()
 
-        if entrada == "":
-            print("ERROR: No puede estar vacío.\n")
-            continue
-        
-        if not entrada.isdigit():
-            print("ERROR: Debe ingresar un número entero.\n")
-            continue
-        
-        numero = int(entrada)
+            if entrada == "":
+                print("ERROR: No puede estar vacío.\n")
+                continue
 
-        if minimo is not None and numero < minimo:
-            print(f"ERROR: Debe ser un número mayor o igual a {minimo}.\n")
-            continue
+            if not entrada.isdigit():
+                print("ERROR: Debe ingresar un número entero o mayor a 0.\n")
+                continue
 
-        if maximo is not None and numero > maximo:
-            print(f"ERROR: Debe ser un número menor o igual a {maximo}.\n")
-            continue
+            numero = int(entrada)
 
-        return numero
+            if minimo is not None and numero < minimo:
+                print(f"ERROR: Debe ser un número mayor o igual a {minimo}.\n")
+                continue
+
+            if maximo is not None and numero > maximo:
+                print(f"ERROR: Debe ser un número menor o igual a {maximo}.\n")
+                continue
+
+            return numero
+        except Exception as e:
+            print(f"Error: {e}.")
 
 def limpiar():
     os.system('cls' if os.name == 'nt' else 'clear')

@@ -28,7 +28,7 @@ def registrar_usuario():
     Agrega / registra el nombre de usuario en 'usuarios.json' si no existe
  
     Returns:
-        boolean:    True si el usuario fue cargado + msj.
+        boolean:    True si el usuario fue cargado.
                     False si el usuario decidio salir.
     """
     global USUARIO_ACTUAL
@@ -79,8 +79,6 @@ def login():
                     False.
     """
     global USUARIO_ACTUAL
-
-    usuarios = obtener_usuarios()
     
     while True:
         nombre = input("Ingrese su nombre de usuario (o 'salir' para volver atras): ")
@@ -98,9 +96,9 @@ def login():
                 print("Volviendo al menu de inicio...\n")
                 return False
 
-            ok, usuario = validar_credenciales(nombre, contrasena)
+            usuario = validar_credenciales(nombre, contrasena)
 
-            if ok:
+            if usuario:
                 USUARIO_ACTUAL = usuario
                 print(f"Felicidades {nombre}, inicio sesion con exito\n")
                 return True
@@ -243,8 +241,8 @@ def main():
 
     while True:
         
-        if not USUARIO_ACTUAL:
-            limpiar()
+        if not USUARIO_ACTUAL: # mientras nadie este logueado
+            
             print("\n\n-------------------------")
             print("BIENVENIDO A SUBASTAS.COM")
             print("-------------------------\n")
@@ -256,13 +254,8 @@ def main():
             print("1- Registrarse")
             print("2- Iniciar sesion")
             print("3- Salir")
-
-            opcion = -1
-            try:
-                while opcion < 1 or opcion > 3:
-                    opcion = int(input("Elija una opción válida (1-3): "))
-            except Exception as e:
-                print(f"Error: {e} \n")
+            
+            opcion = pedir_entero("Ingrese una opcion valida (1-3): ", 1, 3)          
 
             if opcion == 1:
                 print()
@@ -276,13 +269,11 @@ def main():
                 print()
                 print("Gracias por usar SUBASTAS.COM")
                 print("Saliendo...\n")
-
                 break
 
         if USUARIO_ACTUAL:
 
             if USUARIO_ACTUAL["rol"] == "user":
-                limpiar()
                 print("--------------")
                 print("MENU PRINCIPAL")
                 print("--------------\n")
@@ -294,29 +285,24 @@ def main():
                 print("3- Generar informe")
                 print("4- Cerrar Sesion")
             
-                opcion = -1
-                try:
-                    while opcion < 1 or opcion > 4:
-                        opcion = int(input("Elija una opción válida (1-4): "))
-                except Exception as e:
-                    print(f"Error: {e}\n")
+                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 4)
             
                 if opcion == 1:
                     print()
                     mostrar_subastas()
-                    input("Presione 'enter' para volver al menu principal")
+                    input("\nPresione 'enter' para volver al menu principal")
                     print()
         
                 elif opcion == 2:
                     print()
                     registrar_puja()
-                    input("Presione 'enter' para volver al menu principal")
+                    input("\nPresione 'enter' para volver al menu principal")
                     print()
 
                 elif opcion == 3:
                     print()
                     generar_informe()
-                    input("Presione 'enter' para volver al menu principal")
+                    input("\nPresione 'enter' para volver al menu principal")
                     print()
 
                 elif opcion == 4:
@@ -326,6 +312,7 @@ def main():
             else:
                 # Si se inicia sesion como admin
                 pass
+                
  
  
 main()
