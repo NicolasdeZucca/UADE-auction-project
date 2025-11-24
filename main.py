@@ -27,31 +27,36 @@ def registrar_usuario():
     """
     Agrega / registra el nombre de usuario en 'usuarios.json' si no existe
  
-    Args:
-        nombre (str): nombre de usuario
-        password (str): contraseña del usuario
- 
     Returns:
-        boolean, str: True si el usuario fue cargado + msj.
-                      False si hubo errores + msj de error.
+        boolean:    True si el usuario fue cargado + msj.
+                    False si el usuario decidio salir.
     """
     global USUARIO_ACTUAL
     
-    usuarios = leer_archivo(PATH_USUARIOS)
-    nombresUsuarios = []
-    for usuario in usuarios:
-        nombresUsuarios.append(usuario["nombre"])
+    usuarios = obtener_usuarios()
     
     while True:
-        nombre = input("Ingrese su nombre de usuario: ")
+        nombre = input("Ingrese su nombre de usuario (o 'salir' para volver atras): ")
+        print()
+
+        if nombre.strip().lower() == "salir":
+            print("Volviendo al menu de inicio...\n")
+            return False
+        
         if validarNombre(nombre):
-            if nombre in nombresUsuarios:
-                print("El nombre de usuario ya existe, intente nuevamente\n")
+            if usuario_existe(nombre):
+                print(f"El usuario {nombre} ya existe, intente nuevamente...\n")
                 continue
 
             else:
                 while True:
-                    contrasena = input("Ingrese su contrasena: ")
+                    contrasena = input(f"Ingrese la contrasena de '{nombre}' para registrar el usuario (o 'salir' para volver atras): ")
+                    print()
+
+                    if contrasena.strip().lower() == "salir":
+                        print("Volviendo al menu de inicio...\n")
+                        return False
+
                     if validarContrasena(contrasena):
                         usuario = crear_usuario(nombre, contrasena)
                         usuarios.append(usuario)
@@ -65,27 +70,49 @@ def registrar_usuario():
             continue
 
  
-def login(nombre, password):
+def login():
     """
     Funcion de login de usuarios.
  
     Returns:
-        boolean, str: True  + el usuario logueado
-                      False + mensaje de error
+        boolean:    True  + el usuario logueado
+                    False.
     """
     global USUARIO_ACTUAL
- 
-    if USUARIO_ACTUAL:
-        return True, print(f"Se encuentra logueado el usuario {USUARIO_ACTUAL['nombre']}")
- 
+
     usuarios = obtener_usuarios()
-    ok, user = validar_credenciales(nombre, password, usuarios)
-    if ok:
-        USUARIO_ACTUAL = user
-        return (True, f"Usuario {user['nombre']}logueado")
- 
- 
-    return False, print("Usuario o contraseña incorrectos.")
+    
+    while True:
+        nombre = input("Ingrese su nombre de usuario (o 'salir' para volver atras): ")
+        print()
+
+        if nombre.strip().lower() == "salir":
+            print("Volviendo al menu de inicio...\n")
+            return False
+        
+        if validarNombre(nombre):
+            if not usuario_existe(nombre):
+                print(f"El usuario {nombre} no existe, intente nuevamente...\n")
+                continue
+
+            else:
+                while True:
+                    contrasena = input(f"Ingrese la contrasena de {nombre} para iniciar sesion (o 'salir' para volver atras): ")
+                    print()
+
+                    if contrasena.strip().lower() == "salir":
+                        print("Volviendo al menu de inicio...\n")
+                        return False
+
+                    if validar_credenciales(nombre, contrasena):
+                        ok, usuario = validar_credenciales(nombre, contrasena)
+                        USUARIO_ACTUAL = usuario
+                        print(f"Felicidades {nombre}, inicio sesion con exito\n")
+                        return True
+                    else:
+                        continue
+        else:
+            continue
  
  
 def registrar_puja():
@@ -240,22 +267,18 @@ def main():
             if opcion == 1:
                 print()
                 registrar_usuario()
-                print("\n")
  
             elif opcion == 2:
                 print()
-                nombre = input("Ingrese su nombre de usuario: ")
-                password = input("Ingrese su contraseña: ")
-                login(nombre, password)
-                print(f"\nFelicidades {nombre}, usted ingreso con exito.\n\n")
+                login()
 
             elif opcion == 3:
                 break
 
         if USUARIO_ACTUAL:
 
-            print()
-
+            print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
+            print(f"ID: {USUARIO_ACTUAL["id"]}\n")
             print("1- Ver subastastas disponibles")
             print("2- Registrar puja")
             print("3- Generar informe")

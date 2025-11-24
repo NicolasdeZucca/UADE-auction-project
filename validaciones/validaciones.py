@@ -3,7 +3,7 @@
     Se agrupan todas las funciones de validaciones
 """
 import re
-
+from data.usuarios import obtener_usuarios
 
 def validarNombre(nombre):
     """
@@ -68,31 +68,31 @@ def validarContrasena(password):
     return True
 
 
-def usuario_existe(nombreUsuario, listaUsuarios):
+def usuario_existe(nombreUsuario):
     """
     validarUsuarioExistente verifica si un nombre de usuario ya fue previamente registrado.
 
     Args:
         nombreUsuario (str): el nombre de usuario
-        lista (list): una lista con todos los nombres de usuarios registrados 
 
     Returns:
         boolean: True si el usuario existe. 
                  False si no existe
     """
+    listaUsuarios = obtener_usuarios()
 
     # Evitamos duplicados sin importar mayusculas/minúsculas
-    nombres_existentes = [user['nombre'] for user in listaUsuarios]
+    usuario_encontrado = next((user for user in listaUsuarios if user.get("nombre") == nombreUsuario), False)
 
-    if nombreUsuario in nombres_existentes:
-        return (True, (f"El usuario '{nombreUsuario}' ya existe."))
+    if usuario_encontrado:
+        return True, usuario_encontrado
     
-    return (False, f"El usuario {nombreUsuario} no está registrado.")
+    return False
 
 
-def validar_credenciales(nombre, password, listausuarios):
+def validar_credenciales(nombre:str, contrasena:str):
     """
-    validarCredenciales valida la coincidencia de nombre y password de usuario
+    validarCredenciales valida la coincidencia de nombre y/o password de usuario
     con las registradas anteriormente.
 
     Args:
@@ -104,17 +104,15 @@ def validar_credenciales(nombre, password, listausuarios):
         boolean: True si el usuario existe. 
                  False si el usuario no existe.
     """
-
+    listaUsuarios = obtener_usuarios()
     # Next: detiene la búsqueda tan pronto como encuentra el primer usuario coincidente
     # Usamos tuplas para evitar repetidos. Igualmente no deberían existir.
-    usuario_encontrado = next(
-        (user for user in listausuarios if user.get("nombre") == nombre and user.get("password") == password),None)
+    usuario = next((user for user in listaUsuarios if user.get("nombre") == nombre and user.get("password") == contrasena), False)
 
-    if usuario_encontrado:
-        return True, usuario_encontrado
-
+    if usuario:
+        return True, usuario
+    
     return False, None
-
 
 def validar_id_subasta(idSubasta, subastas):
 
