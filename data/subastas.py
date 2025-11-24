@@ -103,9 +103,6 @@ def generar_id_subasta():
             id = random.randint(1,10000)
         else:
             return id
-
-
-
    
 def crear_subasta():
 
@@ -133,20 +130,21 @@ def crear_subasta():
                     break
 
                 if validarNombreCategoria(categoria):
-                    descripcion = input("Ingrese la descripcion de la subasta (y 'atras' para volver a ingresar la categoria o 'salir' para volver al menu de administrador): ")
+                    while True:
+                        descripcion = input("Ingrese la descripcion de la subasta (y 'atras' para volver a ingresar la categoria o 'salir' para volver al menu de administrador): ")
 
-                    if descripcion.strip().lower() == "salir":
-                        print("Volviendo al menu de administrador...\n")
-                        return False
+                        if descripcion.strip().lower() == "salir":
+                            print("Volviendo al menu de administrador...\n")
+                            return False
 
-                    if descripcion.strip().lower() == "atras":
-                        print("Volviendo a ingresar la categoria de la subasta...\n")
-                        break
+                        if descripcion.strip().lower() == "atras":
+                            print("Volviendo a ingresar la categoria de la subasta...\n")
+                            break
 
-                    if validarDescSubasta(descripcion):
-                        pass
-                    else:
-                        continue
+                        if validarDescSubasta(descripcion):
+                            pass
+                        else:
+                            continue
 
                 else:
                     continue   
