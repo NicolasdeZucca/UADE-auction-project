@@ -167,16 +167,16 @@ def registrar_puja():
  
 def generar_informe():
     """
-    genera  informe completo de subastas y lo guarda en un archivo de txt, calcula estadisticas y exporta los resultados.
+    Genera informe completo de subastas y lo guarda en un archivo de txt, 
+    calcula estadisticas y exporta los resultados.
     """
     
-    print("Generando informe de subastas")
+    print("Generando informe de subastas...")
 
-    # se lee los datos de los archivos JSON 
-    pujas = leer_archivo(PATH_PUJAS)
-    subastas = leer_archivo(PATH_SUBASTAS) 
+    # Se leen los datos de los archivos JSON 
+    pujas = leer_archivo(PATH_PUJAS)       
+    subastas = leer_archivo(PATH_SUBASTAS)
 
-    #valida que existan datos antes de procesar
     if not subastas:
         print("No hay subastas para informar.")
         return
@@ -184,50 +184,53 @@ def generar_informe():
     nombre_archivo = "informe_subastas.txt"
     try:
         with open(nombre_archivo, 'w', encoding='utf-8') as archivo:            
-            #encabezado del informe
-            archivo.write("INFORME DE SUBASTAS UADE\n")
-            archivo.write(f"Total de subastas registradas: {len(subastas)}\n\n") #cantidad total de subastas
+            archivo.write("INFORME DE SUBASTAS\n")
+            archivo.write(f"Total de subastas registradas: {len(subastas)}\n\n") 
 
-            #se recorre la lista de subastas 
             for subasta in subastas:
                 id_subasta = subasta.get("id")
                 nombre_subasta = subasta.get("nombre", "Sin nombre")
                 costo_inicial = subasta.get("costo_inicial", 0)
-                pujas_de_subasta = [p for p in pujas if p.get("subasta_id") == id_subasta]
+    
+                # Accedemos al diccionario de pujas usando el ID de la subasta como clave (string)
+                pujas_de_subasta = pujas.get(str(id_subasta), [])
 
-                #calculamos estadisticas de las pujas
+                #estadisticas
                 cantidad_pujas = len(pujas_de_subasta) 
                 monto_maximo = 0
                 promedio_pujas = 0
 
                 if cantidad_pujas > 0:
-                    #se crea una lista solo con los montos para los calculos
+                    # Creamos una lista solo con los montos para los cálculos
                     lista_montos = [p.get("monto", 0) for p in pujas_de_subasta]
                     
-                    monto_maximo = max(lista_montos) #devuelve el elemento max
-                    promedio_pujas = sum(lista_montos) / cantidad_pujas #retorna el promedio
+                    monto_maximo = max(lista_montos) 
+                    promedio_pujas = sum(lista_montos) / cantidad_pujas 
 
-                #escribimos los detalles de la subasta en el archivo
+                # Escribimos los detalles en el archivo
                 archivo.write(f"ID: {id_subasta} | Subasta: {nombre_subasta}\n")
                 archivo.write(f"Precio Base: ${costo_inicial}\n")
                 archivo.write(f"Estado: {subasta.get('estado', 'Desconocido')}\n")
                 archivo.write(f"Ganador actual: {subasta.get('ganador') if subasta.get('ganador') else 'Nadie'}\n")
                 archivo.write(f" >> Cantidad de pujas: {cantidad_pujas}\n")
                 archivo.write(f" >> Puja máxima: ${monto_maximo}\n")
-                archivo.write(f" >> Promedio ofertado: ${promedio_pujas}\n")
+                archivo.write(f" >> Promedio ofertado: ${promedio_pujas}\n") 
                 archivo.write("\n")
-#porcetaje de cantidad de usuarios que participaron en la subasta HACER
+
         print(f"Informe generado exitosamente en {nombre_archivo}")
+        
     except Exception as e: 
-        print(f"error:{e}")
-    #lectura del archivo recién creado para mostrarlo
+        print(f"Error al generar el informe: {e}")
+        
+    # vista previa
     try: 
-        print("\nVista previa del informe")
+        print("\n--- VISTA PREVIA DEL INFORME ---")
         with open(nombre_archivo, 'r', encoding='utf-8') as f_lectura: 
             contenido = f_lectura.read() 
             print(contenido)
-    except Exception as e: #excepcion  si el archivo no existe
-        print(f"no se pudo leer el archivo generado: {e}")
+        print("--------------------------------")
+    except Exception as e: 
+        print(f"No se pudo leer el archivo generado: {e}")
 
 def cerrar_sesion():
     global USUARIO_ACTUAL
