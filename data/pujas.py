@@ -15,14 +15,13 @@ def guardar_puja(puja):
     escribir_archivo(PATH_PUJAS, puja)
     
  
-def registrar_usuario_puja(user_id, nombre, monto, subasta_id):
+def registrar_usuario_puja(user_id, nombre, monto):
  
     nueva_puja = {
         "id_usuario": user_id,
         "usuario": nombre,
         "monto": monto,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "subasta_id": subasta_id
     }
  
     return nueva_puja

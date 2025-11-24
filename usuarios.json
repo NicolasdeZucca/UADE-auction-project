@@ -1,8 +1,14 @@
 [
-  {
-    "id": 1,
-    "nombre": "admin",
-    "password": "123",
-    "rol": "admin"
-  }
+    {
+        "id": 1,
+        "nombre": "admin",
+        "password": "123",
+        "rol": "admin"
+    },
+    {
+        "id": 8946,
+        "nombre": "Hola",
+        "password": "Hola123!",
+        "rol": "user"
+    }
 ]

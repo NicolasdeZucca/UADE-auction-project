@@ -147,8 +147,12 @@ def registrar_puja():
     user_id = USUARIO_ACTUAL["id"]
     user_nombre = USUARIO_ACTUAL["nombre"]
  
-    usuario_puja = registrar_usuario_puja(user_id, user_nombre, monto_validado, subasta_id)
-    pujas.append(usuario_puja)
+    usuario_puja = registrar_usuario_puja(user_id, user_nombre, monto_validado)
+    try:
+        pujas[str(subasta_id)].append(usuario_puja)
+    except KeyError:
+        pujas[str(subasta_id)] = []
+        pujas[str(subasta_id)].append(usuario_puja)
     guardar_puja(pujas)
     actualizar_subasta(subasta_id, monto_validado, user_nombre)
     if not ok:
