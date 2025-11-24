@@ -77,9 +77,10 @@ def actualizar_subasta(subastaID, montoActual, ganador=None):
  
     subastas = obtener_subastas()
  
-    estado, subasta = validar_id_subasta(subastaID, subastas)
-    if not estado:
-        return estado, "No se encontro ID de subasta"
+    subasta = validar_id_subasta(subastaID, subastas)
+    if not subasta:
+        print("No se encontro el ID de la subasta")
+        return False
  
     subasta["monto_actual"] = montoActual
     if subasta["ganador"] is None:

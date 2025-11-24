@@ -128,31 +128,29 @@ def registrar_puja():
     try:
         monto = pedir_entero("Ingrese un monto a ofertar: ")
  
-       
-        ok, monto_validado = validar_monto_subasta(monto, subasta_elegida)
-        if not ok:
-            print("Error, algo salio mal")
+        if not validar_monto_subasta(monto, subasta_elegida):
             return False
- 
- 
-    except ValueError:
-        print("El monto debe ser numerico.")
+         
+    except Exception as e:
+        print(f"Nadie sabe que paso: {e}")
         return False
  
     pujas = obtener_pujas()
     user_id = USUARIO_ACTUAL["id"]
     user_nombre = USUARIO_ACTUAL["nombre"]
  
-    usuario_puja = registrar_usuario_puja(user_id, user_nombre, monto_validado)
+    usuario_puja = registrar_usuario_puja(user_id, user_nombre, monto)
+    
     try:
         pujas[str(subasta_id)].append(usuario_puja)
     except KeyError:
         pujas[str(subasta_id)] = []
         pujas[str(subasta_id)].append(usuario_puja)
     guardar_puja(pujas)
-    actualizar_subasta(subasta_id, monto_validado, user_nombre)
-    if not ok:
-        print("Error al guardar la puja en disco.")
+    
+    
+    if not actualizar_subasta(subasta_id, monto, user_nombre):
+        print("Error al guardar la puja.")
         return False
     
     print(f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto}.")

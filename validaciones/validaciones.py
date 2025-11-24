@@ -4,7 +4,7 @@
 """
 import re
 from data.usuarios import obtener_usuarios
-
+from utilidades.utils import pedir_entero
 def validarNombre(nombre):
     """
     Valida que el nombre de usuario cumpla los requisitos.
@@ -118,20 +118,22 @@ def validar_id_subasta(idSubasta, subastas):
     return subasta_elegida
 
 
-def validar_monto_subasta(monto, objSubasta):
+def validar_monto_subasta(monto, subasta):
     
     if monto == 0:
         print("El monto no puede ser vacío")
-        return False, -1
+        return False
 
-    if objSubasta["monto_actual"] == 0:
-        while monto < objSubasta["costo_inicial"]:
-            print(f"La oferta debe ser mayor al costo inicial: {objSubasta["costo_inicial"]}.")
-            monto = int(input("Ingrese un monto a ofertar nuevamente: "))
-        return True, monto
+    if subasta["monto_actual"] == 0:
+        while monto < subasta["costo_inicial"]:
+            print(f"La oferta debe ser mayor al costo inicial: {subasta["costo_inicial"]}.")
+            monto = pedir_entero("Ingrese un monto a ofertar nuevamente: ", subasta["costo_inicial"])
+        return True
 
-    while monto < objSubasta["monto_actual"]:
-        print("MONTO ACTUAL NO ENTRA")
-        print(f"La oferta debe ser mayor al precio vigente: {objSubasta["monto_actual"]}.")
-        monto = int(input("Ingrese una nueva oferta: "))
-    return True, monto
+    while monto < subasta["monto_actual"]:
+        # print("MONTO ACTUAL NO ENTRA")
+        print(f"La oferta debe ser mayor al precio vigente: {subasta["monto_actual"]}.")
+        monto = pedir_entero("Ingrese una nueva oferta: ", subasta["monto_actual"])
+    
+    
+    return True

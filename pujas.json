@@ -1,3 +1,22 @@
 {
-
+    "23": [
+        {
+            "id_usuario": 8946,
+            "usuario": "Hola",
+            "monto": 5000,
+            "timestamp": "2025-11-24T18:05:06"
+        },
+        {
+            "id_usuario": 8946,
+            "usuario": "Hola",
+            "monto": 4,
+            "timestamp": "2025-11-24T18:18:38"
+        },
+        {
+            "id_usuario": 8946,
+            "usuario": "Hola",
+            "monto": 6000,
+            "timestamp": "2025-11-24T18:19:07"
+        }
+    ]
 }
