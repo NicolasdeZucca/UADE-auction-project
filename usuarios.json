@@ -6,9 +6,9 @@
         "rol": "admin"
     },
     {
-        "id": 1359,
-        "nombre": "pepe",
-        "password": "Pepe123!",
+        "id": 8946,
+        "nombre": "Hola",
+        "password": "Hola123!",
         "rol": "user"
     }
 ]
