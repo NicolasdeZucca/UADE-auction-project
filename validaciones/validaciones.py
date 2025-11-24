@@ -34,6 +34,86 @@ def validarNombre(nombre):
 
     return True
 
+def validarNombreCategoria(nombreCategoria):
+    """
+    Valida que el nombre de categoria cumpla los requisitos.
+
+    Reglas:
+    - Nombre de categoria:
+        * Debe contener letras y/o números
+        * Largo entre 3 y 20 caracteres
+        * Solo mayusculas, minusculas y numeros.
+
+    Params:
+        nombre (str): nombre de categoria 
+
+    Return:
+        (bool): (es_valido)
+                     True si el parametro cumple con las reglas.
+    """
+
+    # Se eliminan espacios vacíos.
+    nombre_valido = nombreCategoria.strip()
+
+    nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
+
+    if not re.fullmatch(nombre_regex, nombre_valido):
+        print("Categoria inválida. Debe tener 3-20 caracteres, solo letras / numeros\n")
+        return False
+
+    return True
+
+def validarNombreSubasta(nombre):
+    """
+    Valida que el nombre de subasta cumpla los requisitos.
+
+    Reglas:
+    - Nombre:
+        * Debe contener letras y/o números
+        * Largo entre 3 y 50 caracteres
+        * Solo mayusculas, minusculas y numeros.
+
+    Params:
+        nombre (str): nombre del usuario 
+
+    Return:
+        (bool): (es_valido)
+                     True si el parametro cumple con las reglas.
+    """
+
+    nombre_regex = r"^(?=.*[a-zA-Z])[A-Za-z0-9](?:[A-Za-z0-9 ]{1,48}[A-Za-z0-9])?$"
+
+    if not re.fullmatch(nombre_regex, nombre):
+        print("Nombre inválido. Debe tener 3-50 caracteres, solo letras / numeros\n")
+        return False
+
+    return True
+
+def validarDescSubasta(descripcion):
+    """
+    Valida que la descripcion de la subasta cumpla los requisitos.
+
+    Reglas:
+    - Descripcion:
+        * Debe contener letras y/o números
+        * Largo entre 3 y 100 caracteres
+        * Solo mayusculas, minusculas y numeros.
+
+    Params:
+        Descripcion (str): nombre del usuario 
+
+    Return:
+        (bool): (es_valido)
+                     True si el parametro cumple con las reglas.
+    """
+    nombre_regex = r"^(?=.*[a-zA-Z])[A-Za-z0-9](?:[A-Za-z0-9 ]{1,98}[A-Za-z0-9])?$"
+
+    if not re.fullmatch(nombre_regex, descripcion):
+        print("Nombre inválido. Debe tener 3-100 caracteres, solo letras / numeros\n")
+        return False
+
+    return True
+
 def validarContrasena(password):
     """
     Valida que la contraseña cumpla los requisitos.

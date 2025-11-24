@@ -5,7 +5,8 @@
 from config.config import PATH_SUBASTAS
 from data.JSONs import leer_archivo, escribir_archivo
 from utilidades.utils import pedir_entero
-from validaciones.validaciones import validar_id_subasta
+from validaciones.validaciones import validar_id_subasta, validarNombreSubasta, validarNombreCategoria, validarDescSubasta
+import random
  
  
 def obtener_subastas():
@@ -91,5 +92,67 @@ def actualizar_subasta(subastaID, montoActual, ganador=None):
  
     guardar_subastas(subastas)
     return True
+
+def generar_id_subasta():
+
+    subastas = obtener_subastas()
+    id = random.randint(1000,10000)
+    idSubastas = [user["id"] for user in subastas]
+    while True:
+        if id in idSubastas:
+            id = random.randint(1,10000)
+        else:
+            return id
+
+
+
    
- 
+def crear_subasta():
+
+    subastas = obtener_subastas()
+
+    while True:
+        nombre = input("Ingrese el nombre de la subasta (o 'salir' para volver al menu de administrador): ")
+        print()
+
+        if nombre.strip().lower() == "salir":
+            print("Volviendo al menu de administrador...\n")
+            break
+
+        if validarNombreSubasta(nombre):
+            while True:
+                categoria = input("Ingrese la categoria de la subasta (y 'atras' para volver a ingresar el nombre o 'salir' para volver al menu de administrador): ")
+                print()
+
+                if categoria.strip().lower() == "salir":
+                    print("Volviendo al menu de administrador...\n")
+                    return False
+
+                if categoria.strip().lower() == "atras":
+                    print("Volviendo a ingresar el nombre de la subasta...\n")
+                    break
+
+                if validarNombreCategoria(categoria):
+                    descripcion = input("Ingrese la descripcion de la subasta (y 'atras' para volver a ingresar la categoria o 'salir' para volver al menu de administrador): ")
+
+                    if descripcion.strip().lower() == "salir":
+                        print("Volviendo al menu de administrador...\n")
+                        return False
+
+                    if descripcion.strip().lower() == "atras":
+                        print("Volviendo a ingresar la categoria de la subasta...\n")
+                        break
+
+                    if validarDescSubasta(descripcion):
+                        pass
+                    else:
+                        continue
+
+                else:
+                    continue   
+                    
+
+
+
+        else:
+            continue

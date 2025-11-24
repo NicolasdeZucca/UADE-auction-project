@@ -7,7 +7,7 @@
     llamadas a las funciones necesarias para el desarrollo del programa.
 """
 import os
-from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta
+from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta, crear_subasta
 from data.usuarios             import obtener_usuarios, crear_usuario, guardar_usuario
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
@@ -320,8 +320,29 @@ def main():
                     cerrar_sesion()
             
             else:
-                # Si se inicia sesion como admin
-                pass
+                print("------------------")
+                print("MENU ADMINISTRADOR")
+                print("------------------\n")
+
+                print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
+                print(f"ID: {USUARIO_ACTUAL["id"]}\n")
+                print("1- Ver subastastas disponibles")
+                print("2- Crear subasta")
+                print("3- Generar informe")
+                print("4- Dar rol de admin")
+                print("5- Cerrar Sesion")
+
+                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 5)
+
+                if opcion == 1:
+                    print()
+                    mostrar_subastas()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+                
+                elif opcion == 2:
+                    print()
+                    crear_subasta()
                 
  
  

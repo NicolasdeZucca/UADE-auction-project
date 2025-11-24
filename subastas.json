@@ -6,7 +6,6 @@
         "costo_inicial": 12000000,
         "descripcion": "Polemico pero confiable",
         "estado": "activa",
-        "tiempo_restante": 300,
         "monto_actual": 0,
         "ganador": null
     },
@@ -17,7 +16,6 @@
         "costo_inicial": 100000000,
         "descripcion": "Obra de arte",
         "estado": "activa",
-        "tiempo_restante": 500,
         "monto_actual": 0,
         "ganador": null
     },
@@ -28,7 +26,6 @@
         "costo_inicial": 5000,
         "descripcion": "Capsula de cafeina - 200mg",
         "estado": "activa",
-        "tiempo_restante": 500,
         "monto_actual": 6000,
         "ganador": "Nico"
     }
