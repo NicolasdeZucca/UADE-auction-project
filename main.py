@@ -190,6 +190,7 @@ def generar_informe():
             for subasta in subastas:
                 id_subasta = subasta.get("id")
                 nombre_subasta = subasta.get("nombre", "Sin nombre")
+                categoria = subasta.get("categoria", "Sin categoría")
                 costo_inicial = subasta.get("costo_inicial", 0)
     
                 # Accedemos al diccionario de pujas usando el ID de la subasta como clave (string)
@@ -198,25 +199,36 @@ def generar_informe():
                 #estadisticas
                 cantidad_pujas = len(pujas_de_subasta) 
                 monto_maximo = 0
+                monto_minimo = 0
                 promedio_pujas = 0
+                rentabilidad = 0.0
 
                 if cantidad_pujas > 0:
                     # Creamos una lista solo con los montos para los cálculos
                     lista_montos = [p.get("monto", 0) for p in pujas_de_subasta]
                     
                     monto_maximo = max(lista_montos) 
+                    monto_minimo = min(lista_montos)
                     promedio_pujas = sum(lista_montos) / cantidad_pujas 
+                    #CALCULO DE RENTABILIDAD
+                    #FORMULA = ((monto maximo  - costo inicial) / costo inicial) * 100
+                    if costo_inicial > 0:
+                        ganancia = monto_maximo - costo_inicial
+                        rentabilidad = (ganancia / costo_inicial) * 100
 
                 # Escribimos los detalles en el archivo
                 archivo.write(f"ID: {id_subasta} | Subasta: {nombre_subasta}\n")
+                archivo.write(f"Categoría: {categoria}\n")
                 archivo.write(f"Precio Base: ${costo_inicial}\n")
                 archivo.write(f"Estado: {subasta.get('estado', 'Desconocido')}\n")
                 archivo.write(f"Ganador actual: {subasta.get('ganador') if subasta.get('ganador') else 'Nadie'}\n")
                 archivo.write(f" >> Cantidad de pujas: {cantidad_pujas}\n")
                 archivo.write(f" >> Puja máxima: ${monto_maximo}\n")
+                archivo.write(f" >> Puja mínima: ${monto_minimo}\n")
                 archivo.write(f" >> Promedio ofertado: ${promedio_pujas}\n") 
-                archivo.write("\n")
-
+                signo = "+" if rentabilidad > 0 else ""#se muestra la rentabilidad con un signo '+' si es positiva
+                archivo.write(f"   * Rentabilidad:{signo}{rentabilidad:}% (sobre precio base ({costo_inicial}))\n")
+                
         print(f"Informe generado exitosamente en {nombre_archivo}")
         
     except Exception as e: 
@@ -231,17 +243,6 @@ def generar_informe():
         print("--------------------------------")
     except Exception as e: 
         print(f"No se pudo leer el archivo generado: {e}")
-
-def cerrar_sesion():
-    global USUARIO_ACTUAL
-
-    if not USUARIO_ACTUAL:
-        return False, print("No hay un usuario logueado actualmente.")
-
-    else:
-        USUARIO_ACTUAL = None
-        return True, print("...cerrando sesion..."), 
- 
 # Funcion main principal
 def main():
     """

@@ -26,7 +26,7 @@
         "costo_inicial": 5000,
         "descripcion": "Capsula de cafeina - 200mg",
         "estado": "activa",
-        "monto_actual": 6000,
-        "ganador": "Nico"
+        "monto_actual": 0,
+        "ganador": null
     }
 ]
