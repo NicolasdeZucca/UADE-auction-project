@@ -83,9 +83,9 @@ def actualizar_subasta(subastaID, montoActual, ganador=None):
         return False
  
     subasta["monto_actual"] = montoActual
-    if subasta["ganador"] is None:
-        subasta["ganador"] = ganador
+    subasta["ganador"] = ganador
  
     guardar_subastas(subastas)
+    return True
    
  

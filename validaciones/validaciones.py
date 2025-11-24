@@ -125,15 +125,14 @@ def validar_monto_subasta(monto, subasta):
         return False
 
     if subasta["monto_actual"] == 0:
-        while monto < subasta["costo_inicial"]:
+        while monto <= subasta["costo_inicial"]:
             print(f"La oferta debe ser mayor al costo inicial: {subasta["costo_inicial"]}.")
             monto = pedir_entero("Ingrese un monto a ofertar nuevamente: ", subasta["costo_inicial"])
-        return True
+        return monto
 
-    while monto < subasta["monto_actual"]:
-        # print("MONTO ACTUAL NO ENTRA")
+    while monto <= subasta["monto_actual"]:
         print(f"La oferta debe ser mayor al precio vigente: {subasta["monto_actual"]}.")
         monto = pedir_entero("Ingrese una nueva oferta: ", subasta["monto_actual"])
     
     
-    return True
+    return monto
