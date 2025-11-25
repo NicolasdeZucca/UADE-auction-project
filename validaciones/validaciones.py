@@ -5,7 +5,8 @@
 import re
 from data.usuarios import obtener_usuarios
 from utilidades.utils import pedir_entero
-def validarNombre(nombre):
+
+def validarNombre(nombre:str):
     """
     Valida que el nombre de usuario cumpla los requisitos.
 
@@ -29,12 +30,12 @@ def validarNombre(nombre):
     nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
 
     if not re.fullmatch(nombre_regex, nombre_valido):
-        print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros\n")
+        print("Nombre inválido. Debe tener 3-20 caracteres, solo letras / numeros (minimo una letra)\n")
         return False
 
     return True
 
-def validarNombreCategoria(nombreCategoria):
+def validarNombreCategoria(nombreCategoria:str):
     """
     Valida que el nombre de categoria cumpla los requisitos.
 
@@ -63,7 +64,7 @@ def validarNombreCategoria(nombreCategoria):
 
     return True
 
-def validarNombreSubasta(nombre):
+def validarNombreSubasta(nombre:str):
     """
     Valida que el nombre de subasta cumpla los requisitos.
 
@@ -88,7 +89,7 @@ def validarNombreSubasta(nombre):
 
     return True
 
-def validarDescSubasta(descripcion):
+def validarDescSubasta(descripcion:str):
     """
     Valida que la descripcion de la subasta cumpla los requisitos.
 
@@ -113,7 +114,7 @@ def validarDescSubasta(descripcion):
 
     return True
 
-def validarContrasena(password):
+def validarContrasena(password:str):
     """
     Valida que la contraseña cumpla los requisitos.
 
@@ -137,11 +138,11 @@ def validarContrasena(password):
     # Se eliminan espacios vacíos.
     password_valida = password.strip()
 
-    pass_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:<,>.?/|\\~-]).{6,16}$"
+    pass_regex = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{6,16}$"
 
     if not re.fullmatch(pass_regex, password_valida):
         print("Contraseña inválida. Debe tener 6-16 caracteres e incluir: ")
-        print("una mayúscula, una minúscula, un número y un caracter especial.\n")
+        print("una mayúscula, una minúscula, un número y un caracter especial (sin espacios).\n")
         return False
 
     return True
