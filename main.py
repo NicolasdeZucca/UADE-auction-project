@@ -7,13 +7,13 @@
     llamadas a las funciones necesarias para el desarrollo del programa.
 """
 from config.config             import PATH_PUJAS, PATH_SUBASTAS
-from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta, crear_subasta
+from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta, crear_subasta, guardar_subastas, generar_id_subasta
 from data.usuarios             import obtener_usuarios, crear_usuario, guardar_usuario
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
 from utilidades.utils          import pedir_entero
 from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
-from datetime                  import datetime
+from datetime                  import datetime, timedelta
  
  
 # --- Usuario actual logueado ---
@@ -400,12 +400,93 @@ def cerrar_sesion():
         USUARIO_ACTUAL = None
         return True, print("...cerrando sesion..."), 
 
-
 def reactivar_subasta():
-    pass
+    """
+    permite al admin seleccionar una subasta YA FINALIZADA y modificar sus valores (si EL desea) y relanzarla con un NUEVO ID.
+    """
+    print("\n--- REACTIVAR SUBASTA ---")
+
+    subastas = leer_archivo(PATH_SUBASTAS)
+
+    # se filtran SOLO las finalizadas
+    finalizadas = [subasta for subasta in subastas if subasta.get("estado") == "finalizada"]
+
+    if not finalizadas:
+        print("No hay subastas finalizadas para reactivar.\n")
+        return
+
+    # se muestran las finalizadas para que elija
+    print(f"Subastas finalizadas disponibles ({len(finalizadas)}):")
+    for sub in finalizadas:
+        print(f"ID: {sub['id']} | Nombre: {sub['nombre']} | Terminó: {sub['fecha_fin']}")
+    print()
+
+    #eleccion de subasta
+    red = True
+    while red is True:
+        try:
+            id_elegido = pedir_entero("Ingrese el ID de la subasta a reactivar (0 para volver): ")
+            if id_elegido == 0:
+                return
+            
+            #se busca la subasta original en la lista de finalizadas
+            subasta_origen = None
+            for subasta in finalizadas:
+                if subasta["id"] == id_elegido:
+                    subasta_origen = subasta
+                    break
+            
+            if subasta_origen:
+                break
+            else:
+                print("ID invalido o la subasta no esta finalizada, intente nuevamente.")
+        except Exception as e:
+            print(f"Error al ingresar el ID: {e}")
+
+    print(f"\n--- Configurando nueva subasta basada en: '{subasta_origen['nombre']}")
+
+    #se pregunta si desea modificar el precio 
+    nuevo_costo = subasta_origen['costo_inicial']
+    print(f"Costo inicial original: ${nuevo_costo}")
+    red = True
+    while red is True:
+        cambiar_precio = input("Desea modificar el precio inicial? (si/no): ").strip().lower()
+        if cambiar_precio == "si":
+            nuevo_costo = pedir_entero("Ingrese el nuevo precio inicial: ", 1)
+            break
+        elif cambiar_precio == "no":
+            break
+        else:
+            print("Por favor ingrese 'si' o 'no'.")
+
+    # se define nueva duración 
+    print("\nindique la duracion para la nueva ronda.")
+    duracion_min = pedir_entero("Ingrese la duracion en min: ", 1)
     
+    # se calcula la fecha
+    ahora = datetime.now()
+    duracion_segundos = duracion_min * 60
+    fecha_fin = (ahora + timedelta(seconds=duracion_segundos)).isoformat(timespec="seconds")    #se usa isoformat para guardar bien la fecha
 
+    # se genera un ID nuevo xq es otra subasta por mas q se repita
+    nuevo_id = generar_id_subasta() 
 
+    nueva_subasta = {
+        "id": nuevo_id,
+        "nombre": subasta_origen["nombre"],       # mismo nombre
+        "categoria": subasta_origen["categoria"], # misma categoria
+        "descripcion": subasta_origen["descripcion"], #misma descripcion
+        "costo_inicial": nuevo_costo,             # posible nuevo precio o no
+        "estado": "activa",                       
+        "fecha_inicio": str(ahora.isoformat(timespec="seconds")),  #se usa isoformat para guardar bien la fecha
+        "fecha_fin": str(fecha_fin),
+        "monto_actual": 0,                        #se resetean las pujas
+        "ganador": None                           #se resetea el ganador
+    }
+
+    subastas.append(nueva_subasta)
+    guardar_subastas(subastas)
+    print(f"\nexito: subasta reactivada con el NUEVO ID: {nuevo_id}")
 # Funcion main principal
 def main():
     """
