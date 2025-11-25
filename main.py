@@ -524,7 +524,7 @@ def main():
 
             if USUARIO_ACTUAL["rol"] == "user":
                 print("--------------")
-                print("MENU PRINCIPAL")
+                print("MENU USUARIO")
                 print("--------------\n")
 
                 print(f"Usuario: {USUARIO_ACTUAL['nombre']}")
@@ -535,7 +535,7 @@ def main():
                 print("4- Cerrar Sesion")
                  
             
-                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 4)
+                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 4)
             
                 if opcion == 1:
                     print()
@@ -572,7 +572,7 @@ def main():
                 print("5- Reactivar subastas") 
                 print("6- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 6)
+                opcion = pedir_entero("Ingrese una opcion valida (1-6): ", 1, 6)
 
                 if opcion == 1:
                     print()
