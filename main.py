@@ -6,17 +6,13 @@
     Proporciona un menu interactivo para el usuario y se realizan
     llamadas a las funciones necesarias para el desarrollo del programa.
 """
-import os
+from config.config             import PATH_PUJAS, PATH_SUBASTAS
 from data.subastas             import actualizar_subasta, mostrar_subastas, elegir_subasta, crear_subasta
 from data.usuarios             import obtener_usuarios, crear_usuario, guardar_usuario
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
-from config.config             import PATH_PUJAS, PATH_SUBASTAS, PATH_USUARIOS
 from utilidades.utils          import pedir_entero
-from data.JSONs                import leer_archivo
-from typing                    import Dict, Any
 from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
-import json
  
  
 # --- Usuario actual logueado ---
@@ -75,7 +71,7 @@ def login():
     Funcion de login de usuarios.
  
     Returns:
-        boolean:    True  + el usuario logueado
+        boolean:    True  
                     False.
     """
     global USUARIO_ACTUAL
@@ -231,7 +227,7 @@ def generar_informe():
                 archivo.write(f" >> Puja mínima: ${monto_minimo}\n")
                 archivo.write(f" >> Promedio ofertado: ${promedio_pujas}\n") 
                 signo = "+" if rentabilidad > 0 else ""#se muestra la rentabilidad con un signo '+' si es positiva
-                archivo.write(f"   * Rentabilidad:{signo}{rentabilidad:}% (sobre precio base ({costo_inicial}))\n")
+                archivo.write(f" >> Rentabilidad:{signo}{rentabilidad:}% (sobre precio base ({costo_inicial}))\n\n")
                 
         print(f"Informe generado exitosamente en {nombre_archivo}")
         
