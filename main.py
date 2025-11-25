@@ -562,6 +562,10 @@ def solicitudes_dinero():
     input("Ingrese 'enter' para continuar: ")
     print()
 
+    if not usuariosConSolicitud:
+        print("No hay solicitudes de usuarios.")
+        return False
+
     for usuario in usuariosConSolicitud:
 
         print("----------------------")
