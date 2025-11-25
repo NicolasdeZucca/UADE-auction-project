@@ -258,9 +258,15 @@ def solicitar_rol_admin():
             if usuario.get("solicitud_admin") is True:
                 print("Ya has enviado una solicitud previamente, espera a que un administrador la apruebe")
                 return
-
-            confirmacion = input("estas seguro que deseas solicitar permisos de Administrador? (si/no): ")
-            if confirmacion == "si":
+            
+            while True:
+                confirmacion = input("estas seguro que deseas solicitar permisos de Administrador? (si/no): ").lower().strip()
+            
+            if confirmacion == "si" or confirmacion == "no":
+                break
+            else:
+                print("Opción no válida. Por favor escribe 'si' o 'no'.\n")
+            if confirmacion == 'si':
                 usuario["solicitud_admin"] = True
                 guardar_usuario(usuarios)
                 print("Solicitud enviada con éxito, espera a que un admin revise tu peticion")
