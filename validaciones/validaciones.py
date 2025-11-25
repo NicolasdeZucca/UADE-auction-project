@@ -44,13 +44,13 @@ def validarNombreCategoria(nombreCategoria:str):
         * Debe contener letras y/o números
         * Largo entre 3 y 20 caracteres
         * Solo mayusculas, minusculas y numeros.
+        * Solo una palabra sin espacios.
 
     Params:
         nombre (str): nombre de categoria 
 
     Return:
-        (bool): (es_valido)
-                     True si el parametro cumple con las reglas.
+        (bool):  True si el parametro cumple con las reglas.
     """
 
     # Se eliminan espacios vacíos.
@@ -59,7 +59,7 @@ def validarNombreCategoria(nombreCategoria:str):
     nombre_regex = r"^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"
 
     if not re.fullmatch(nombre_regex, nombre_valido):
-        print("Categoria inválida. Debe tener 3-20 caracteres, solo letras / numeros\n")
+        print("Categoria inválida. Debe ser una palabra y tener 3-20 caracteres, solo letras / numeros\n")
         return False
 
     return True
@@ -106,10 +106,10 @@ def validarDescSubasta(descripcion:str):
         (bool): (es_valido)
                      True si el parametro cumple con las reglas.
     """
-    nombre_regex = r"^(?=.*[a-zA-Z])[A-Za-z0-9](?:[A-Za-z0-9 ]{1,98}[A-Za-z0-9])?$"
+    nombre_regex = r"^(?=.*[A-Za-z])[A-Za-z0-9 ]{3,100}$"
 
     if not re.fullmatch(nombre_regex, descripcion):
-        print("Nombre inválido. Debe tener 3-100 caracteres, solo letras / numeros\n")
+        print("Descripción inválida. Debe tener 3-100 caracteres, solo letras / numeros\n")
         return False
 
     return True
