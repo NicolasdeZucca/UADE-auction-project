@@ -147,7 +147,7 @@ def validarContrasena(password):
     return True
 
 
-def usuario_existe(nombreUsuario):
+def usuario_existe(nombreUsuario, listaUsuarios=None):
     """
     validarUsuarioExistente verifica si un nombre de usuario ya fue previamente registrado.
 
@@ -158,7 +158,8 @@ def usuario_existe(nombreUsuario):
         boolean: True si el usuario existe. 
                  False si no existe
     """
-    listaUsuarios = obtener_usuarios()
+    if listaUsuarios is None:
+        listaUsuarios = obtener_usuarios()
 
     # Evitamos duplicados sin importar mayusculas/minúsculas
     usuario_encontrado = next((user for user in listaUsuarios if user.get("nombre") == nombreUsuario), False)
@@ -169,7 +170,7 @@ def usuario_existe(nombreUsuario):
     return False
 
 
-def validar_credenciales(nombre:str, contrasena:str):
+def validar_credenciales(nombre:str, contrasena:str, listaUsuarios=None):
     """
     validarCredenciales valida la coincidencia de nombre y/o password de usuario
     con las registradas anteriormente.
@@ -183,7 +184,8 @@ def validar_credenciales(nombre:str, contrasena:str):
         boolean: True si el usuario existe. 
                  False si el usuario no existe.
     """
-    listaUsuarios = obtener_usuarios()
+    if listaUsuarios is None:
+        listaUsuarios = obtener_usuarios()
     # Next: detiene la búsqueda tan pronto como encuentra el primer usuario coincidente
     # Usamos tuplas para evitar repetidos. Igualmente no deberían existir.
     usuario = next((user for user in listaUsuarios if user.get("nombre") == nombre and user.get("password") == contrasena), False)

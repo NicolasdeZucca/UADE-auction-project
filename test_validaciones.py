@@ -1,136 +1,105 @@
-from validaciones.validaciones import(
-    validarNombreContrasena,
+import pytest
+from validaciones.validaciones import (
+    validarNombre,
+    validarContrasena,
     usuario_existe,
     validar_credenciales,
     validar_monto_subasta
 )
+#prueba para validar validarNombre
+def test_nombre_valido():
+    """prueba que un nombre correcto devuelva true"""
+    assert validarNombre('UsuarioValido1') is True
 
-#prueba para validarNombreContrasena 
-def test_nombre_y_password_validos():
-    '''
-    prueba el caso de exito con un nombre y un pass correctos.
-    '''
-    resultado = validarNombreContrasena('UsuarioValido1', 'PassValida123!')
-    assert resultado [0] is True
-
-def test_nombre_corto_invalido ():
-    '''
-    prueba un nombre muy corto
-    '''
-    resultado = validarNombreContrasena('U', 'PassValida123!')
-    assert resultado [0] is False
-    assert 'Nombre inválido' in resultado[1] 
+def test_nombre_corto_invalido():
+    """prueba que un nombre muy corto devuelva false"""
+    assert validarNombre('U') is False
 
 def test_nombre_con_simbolos_invalido():
-    """
-    prueba un nombre con caracteres no permitidos
-    """
-    resultado = validarNombreContrasena("Usuario!", "PassValida123!")
-    assert resultado[0] is False
-    assert "Nombre inválido" in resultado[1]
+    """prueba que un nombre con simbolos prohibidos devuelva false"""
+    assert validarNombre("Usuario!") is False
+#pruebas para validar validarContrasena
+def test_password_valida():
+    """prueba una contraseña que cumple todos los requisitos"""
+    assert validarContrasena('PassValida123!') is True
 
 def test_password_sin_mayuscula():
-    """
-    prueba una pass sin mayuscula
-    """
-    resultado = validarNombreContrasena("UsuarioValido1", "passvalida123!")
-    assert resultado[0] is False
-    assert "Contraseña inválida" in resultado[1]
+    """prueba que falle si falta la mayuscula"""
+    assert validarContrasena("passvalida123!") is False
 
 def test_password_sin_numero():
-    """
-    prueba una password sin numero
-    """
-    resultado = validarNombreContrasena("UsuarioValido1", "PassValida!")
-    assert resultado[0] is False
-    assert "Contraseña inválida" in resultado[1]
+    """prueba que falle si falta el numero"""
+    assert validarContrasena("PassValida!") is False
 
 def test_password_sin_simbolo():
-    """
-    prueba una password sin simbolo
-    """
-    resultado = validarNombreContrasena("UsuarioValido1", "PassValida123")
-    assert resultado[0] is False
-    assert "Contraseña inválida" in resultado[1]
+    """prueba que falle si falta el caracter especial"""
+    assert validarContrasena("PassValida123") is False
 
 def test_password_corta():
+    """prueba que falle si es muy corta"""
+    assert validarContrasena("P1!") is False
+#prueba para ver si un usuario existe
+def test_usuario_si_existe_mock():
     """
-    prueba una password demasiado corto
+    prueba que la funcion encuentre a un usuario dentro de una lista falsa o mock
+    NO lee el archivo real
     """
-    resultado = validarNombreContrasena("UsuarioValido1", "P1!")
-    assert resultado[0] is False
-    assert "Contraseña inválida" in resultado[1]
-
-
-#puebas para el usuario que existe
-def test_usuario_si_existe():
-    """
-    prueba que la validacion de un usuario que SI está en la lista
-    """
-    lista_mock = [{"nombre": "Nico"}, {"nombre": "Pepe"}]
-    #la funcion en caso de que sea verdadero devuelve (true, "mensaje") 
+    lista_mock = [
+        {"nombre": "Nico", "password": "123"}, 
+        {"nombre": "Pepe", "password": "abc"}
+    ]    
     resultado = usuario_existe("Nico", lista_mock)
-    assert resultado[0] is True
+    assert resultado is True
 
-def test_usuario_no_existe():
-    """
-    prueba la validacion de un usuario que NO está en la lista
-    """
-    lista_mock = [{"nombre": "Nico"}, {"nombre": "Pepe"}]
-    #la funcion en caso de que sea falso devuelve (false, "mensaje") 
+def test_usuario_no_existe_mock():
+    """prueba que devuelva false si el usuario no esta en la lista falsa o mock"""
+    lista_mock = [{"nombre": "Nico"}]    
     resultado = usuario_existe("Franco", lista_mock)
-    assert resultado[0] is False
-#pruebas para validar_credenciales
-def test_credenciales_correctas():
-    """
-    prueba un login exitoso
-    """
-    lista_mock = [{"nombre": "admin", "password": "123"}]
-    #devuelve (true, {diccionario_usuario})
-    resultado = validar_credenciales("admin", "123", lista_mock)
-    assert resultado[0] is True
-    assert resultado[1]["nombre"] == "admin" #verifica que devuelve el usuario
+    assert resultado is False
+#prueba de credenciales
+def test_credenciales_correctas_falsa():
+    """prueba un login exitoso con datos falsos"""
+    lista_mock = [{"nombre": "admin_test", "password": "123"}]    
+    resultado = validar_credenciales("admin_test", "123", lista_mock)
+    
+    assert resultado is not False
+    assert resultado["nombre"] == "admin_test"
 
-def test_credenciales_pass_incorrecta():
-    """
-    prueba un login con password incorrecta
-    """
-    lista_mock = [{"nombre": "admin", "password": "123"}]
-    #devuelve (false, none)
-    resultado = validar_credenciales("admin", "pass_erroneo", lista_mock)
-    assert resultado[0] is False
+def test_credenciales_password_incorrecta_mock():
+    """prueba un login fallido por contraseña incorrecta"""
+    lista_mock = [{"nombre": "admin_test", "password": "123"}]
+    
+    resultado = validar_credenciales("admin_test", "clave_erronea", lista_mock)
+    assert resultado is False
 
-def test_credenciales_usuario_incorrecto():
-    """
-    prueba un login con usuario que no existe
-    """
-    lista_mock = [{"nombre": "admin", "password": "123"}] 
-    #devuelve (false, none)
-    resultado = validar_credenciales("user_inventado", "123", lista_mock)
-    assert resultado[0] is False
-#pruebas para validar monto subasta
+def test_credenciales_usuario_inexistente_mock():
+    """prueba un login fallido porque el usuario no existe en la lista"""
+    lista_mock = [{"nombre": "admin_test", "password": "123"}]
+    
+    resultado = validar_credenciales("usuario_fantasma", "123", lista_mock)
+    assert resultado is False
+# pruebas monto subasta
 def test_monto_subasta_cero_es_invalido():
-    """
-    prueba que un monto de 0 es rechazado
-    """
+    """prueba que un monto de 0 sea rechazado"""
     subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
+    
     resultado = validar_monto_subasta(0, subasta_mock)
-    assert resultado[0] is False #devuelve falso si el monto es 0
+    assert resultado is False
 
-def test_monto_subasta_valido_sobre_costo_inicial():
+def test_monto_valido_inicial():
     """
-    prueba una oferta VALIDA cuando la subasta esta en 0
+    prueba una oferta valida inicial (mayor al costo base).
     """
     subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
+    
     resultado = validar_monto_subasta(150, subasta_mock)
-    assert resultado[0] is True #devuelve verdadero si el monto es valido
-    assert resultado[1] == 150 
+    assert resultado == 150
 
-def test_monto_subasta_valido_sobre_monto_actual():
+def test_monto_valido_supera_puja():
     """
-    prueba una oferta valida sobre una puja anterior
+    prueba una oferta valida que supera la puja actual
     """
     subasta_mock = {"costo_inicial": 100, "monto_actual": 200}
-    resultado = validar_monto_subasta(250, subasta_mock)
-    assert resultado[0] is True
-    assert resultado[1] == 250
+    
+    resultado = validar_monto_subasta(300, subasta_mock)
+    assert resultado == 300
