@@ -660,7 +660,7 @@ def revocar_admins():
         if idSeleccionado in idAdmin:
             print("Elija entre las opciones:")
             print(f"1- Revocar el permiso de admin al ID {idSeleccionado}")
-            print("3- Cancelar operacion sin cambios en los roles.")
+            print("2- Cancelar operacion sin cambios en los roles.")
 
             opcion = pedir_entero("Ingrese la opcion seleccionada (1-2): ", 1, 2)
             print()
