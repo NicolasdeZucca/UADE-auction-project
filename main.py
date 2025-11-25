@@ -13,6 +13,7 @@ from data.pujas                import obtener_pujas, registrar_usuario_puja, gua
 from data.JSONs                import leer_archivo
 from utilidades.utils          import pedir_entero
 from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
+from datetime                  import datetime
  
  
 # --- Usuario actual logueado ---
@@ -167,82 +168,128 @@ def registrar_puja():
  
 def generar_informe():
     """
-    Genera informe completo de subastas y lo guarda en un archivo de txt, 
-    calcula estadisticas y exporta los resultados.
+    Genera informe completo de subastas.
+    Solo administradores pueden generar el informe.
     """
-    
-    print("Generando informe de subastas...")
 
-    # Se leen los datos de los archivos JSON 
-    pujas = leer_archivo(PATH_PUJAS)       
+    # VALIDACION DE ROL
+    if USUARIO_ACTUAL is None or USUARIO_ACTUAL.get("rol") != "admin":
+        print("Solo un administrador puede generar el informe completo.\n")
+        return False
+
+    print("Generando informe de subastas...\n")
+
+    pujas = leer_archivo(PATH_PUJAS)
     subastas = leer_archivo(PATH_SUBASTAS)
 
     if not subastas:
         print("No hay subastas para informar.")
-        return
+        return False
 
     nombre_archivo = "informe_subastas.txt"
+
     try:
-        with open(nombre_archivo, 'w', encoding='utf-8') as archivo:            
-            archivo.write("INFORME DE SUBASTAS\n")
-            archivo.write(f"Total de subastas registradas: {len(subastas)}\n\n") 
+        with open(nombre_archivo, "w", encoding="utf-8") as archivo:
 
-            for subasta in subastas:
-                id_subasta = subasta.get("id")
-                nombre_subasta = subasta.get("nombre", "Sin nombre")
-                categoria = subasta.get("categoria", "Sin categoría")
-                costo_inicial = subasta.get("costo_inicial", 0)
-    
-                # Accedemos al diccionario de pujas usando el ID de la subasta como clave (string)
-                pujas_de_subasta = pujas.get(str(id_subasta), [])
+            archivo.write("========== INFORME COMPLETO DE SUBASTAS ==========\n\n")
+            archivo.write(f"Total de subastas registradas: {len(subastas)}\n\n")
 
-                #estadisticas
-                cantidad_pujas = len(pujas_de_subasta) 
-                monto_maximo = 0
-                monto_minimo = 0
-                promedio_pujas = 0
-                rentabilidad = 0.0
+            for sub in subastas:
 
-                if cantidad_pujas > 0:
-                    # Creamos una lista solo con los montos para los cálculos
-                    lista_montos = [p.get("monto", 0) for p in pujas_de_subasta]
-                    
-                    monto_maximo = max(lista_montos) 
-                    monto_minimo = min(lista_montos)
-                    promedio_pujas = sum(lista_montos) / cantidad_pujas 
-                    #CALCULO DE RENTABILIDAD
-                    #FORMULA = ((monto maximo  - costo inicial) / costo inicial) * 100
-                    if costo_inicial > 0:
-                        ganancia = monto_maximo - costo_inicial
-                        rentabilidad = (ganancia / costo_inicial) * 100
+                id_sub = sub["id"]
+                nombre = sub["nombre"]
+                categoria = sub.get("categoria", "Desconocida")
+                estado = sub.get("estado", "N/A")
+                costo_inicial = sub.get("costo_inicial", 0)
+                ganador = sub.get("ganador") or "Nadie"
 
-                # Escribimos los detalles en el archivo
-                archivo.write(f"ID: {id_subasta} | Subasta: {nombre_subasta}\n")
-                archivo.write(f"Categoría: {categoria}\n")
-                archivo.write(f"Precio Base: ${costo_inicial}\n")
-                archivo.write(f"Estado: {subasta.get('estado', 'Desconocido')}\n")
-                archivo.write(f"Ganador actual: {subasta.get('ganador') if subasta.get('ganador') else 'Nadie'}\n")
-                archivo.write(f" >> Cantidad de pujas: {cantidad_pujas}\n")
-                archivo.write(f" >> Puja máxima: ${monto_maximo}\n")
-                archivo.write(f" >> Puja mínima: ${monto_minimo}\n")
-                archivo.write(f" >> Promedio ofertado: ${promedio_pujas}\n") 
-                signo = "+" if rentabilidad > 0 else ""#se muestra la rentabilidad con un signo '+' si es positiva
-                archivo.write(f" >> Rentabilidad:{signo}{rentabilidad:}% (sobre precio base ({costo_inicial}))\n\n")
+                # Fechas
+                inicio = sub.get("fecha_inicio")
+                fin = sub.get("fecha_fin")
+
+               
+                dt_inicio = datetime.fromisoformat(inicio)
+                dt_fin = datetime.fromisoformat(fin)
+                duracion_minutos = int((dt_fin - dt_inicio).total_seconds() // 60)
                 
-        print(f"Informe generado exitosamente en {nombre_archivo}")
-        
-    except Exception as e: 
-        print(f"Error al generar el informe: {e}")
-        
-    # vista previa
-    try: 
-        print("\n--- VISTA PREVIA DEL INFORME ---")
-        with open(nombre_archivo, 'r', encoding='utf-8') as f_lectura: 
-            contenido = f_lectura.read() 
-            print(contenido)
-        print("--------------------------------")
-    except Exception as e: 
-        print(f"No se pudo leer el archivo generado: {e}")
+
+                # Pujas de esta subasta
+                lista = pujas.get(str(id_sub), [])
+
+                archivo.write(f"--- SUBASTA # {id_sub} — {nombre} ---\n")
+                archivo.write(f"Categoría: {categoria}\n")
+                archivo.write(f"Estado: {estado}\n")
+                archivo.write(f"Fecha inicio: {inicio}\n")
+                archivo.write(f"Fecha fin: {fin}\n")
+                archivo.write(f"Duración total: {duracion_minutos} minutos\n")
+                archivo.write(f"Precio inicial: ${costo_inicial}\n")
+                archivo.write(f"Ganador: {ganador}\n\n")
+
+                # Estadísticas
+                cant_pujas = len(lista)
+
+                if cant_pujas == 0:
+                    archivo.write("No hubo pujas en esta subasta.\n\n")
+                    continue
+
+                montos = [p["monto"] for p in lista]
+                monto_max = max(montos)
+                monto_min = min(montos)
+                promedio = round(sum(montos) / cant_pujas, 2)
+
+                # Rentabilidad
+                if costo_inicial > 0:
+                    rentabilidad = ((monto_max - costo_inicial) / costo_inicial) * 100
+                else:
+                    rentabilidad = 0
+
+                archivo.write("Estadísticas:\n")
+                archivo.write(f" - Cantidad de pujas: {cant_pujas}\n")
+                archivo.write(f" - Monto máximo: ${monto_max}\n")
+                archivo.write(f" - Monto mínimo: ${monto_min}\n")
+                archivo.write(f" - Promedio ofertado: ${promedio}\n")
+                archivo.write(f" - Rentabilidad: {rentabilidad:.2f}%\n\n")
+
+                # Participantes
+                archivo.write("Participantes:\n")
+                participantes = {}
+
+                for participante in lista:
+                    usr = participante["usuario"]
+                    if usr not in participantes:
+                        participantes[usr] = []
+                    participantes[usr].append(participante["monto"])
+
+                for usuario, montos_usr in participantes.items():
+                    total = sum(montos_usr)
+                    archivo.write(f" - {usuario}: {len(montos_usr)} pujas, ${total} ofertados\n")
+
+                archivo.write("\n Historial de pujas:\n")
+
+                lista_ordenada = sorted(lista, key=lambda p: p["timestamp"])
+
+                for i, participante in enumerate(lista_ordenada, start=1):
+                    archivo.write(
+                        f" {i}) {participante['usuario']} | ${participante['monto']} | {participante['timestamp']}\n"
+                    )
+
+                archivo.write("\n\n")
+
+        print(f"Informe generado exitosamente en {nombre_archivo}\n")
+
+    except Exception as e:
+        print(f"Error generando informe: {e}")
+        return False
+
+    # Vista previa
+    print("----- VISTA PREVIA -----")
+    with open(nombre_archivo, "r", encoding="utf-8") as f:
+        print(f.read())
+    print("------------------------")
+
+    return True
+
+
 def solicitar_rol_admin():
     """
     permite a un usuario normal solicitar permisos de administrador
@@ -352,6 +399,13 @@ def cerrar_sesion():
     else:
         USUARIO_ACTUAL = None
         return True, print("...cerrando sesion..."), 
+
+
+def reactivar_subasta():
+    pass
+    
+
+
 # Funcion main principal
 def main():
     """
@@ -441,9 +495,10 @@ def main():
                 print("2- Crear subasta")
                 print("3- Generar informe")
                 print("4- Gestionar nuevos admins") 
-                print("5- Cerrar Sesion")
+                print("5- Reactivar subastas") 
+                print("6- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
+                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 6)
 
                 if opcion == 1:
                     print()
@@ -466,8 +521,14 @@ def main():
                     gestionar_nuevos_admins()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
+                
+                elif opcion == 5: 
+                    print()
+                    reactivar_subasta()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
 
-                elif opcion == 5:
+                elif opcion == 6:
                     print()
                     cerrar_sesion()
                 
