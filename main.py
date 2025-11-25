@@ -618,6 +618,68 @@ def solicitudes_dinero():
             print("Debe elegir un ID de la lista, intente nuevamente...\n")
             continue
 
+def revocar_admins():
+    """
+    realiza todo el proceso de 
+    """
+    print("--- REVOCAR ADMINS ---\n")
+
+    print("Usted vera una lista con los usuarios con el rol de administrador en el sistema y elegira si revocar o no ese rol.\n")
+
+    usuarios = obtener_usuarios()
+
+    usuariosMenosActual = usuarios.remove(USUARIO_ACTUAL)
+
+    usuariosAdmin = [user for user in usuariosMenosActual if user['rol']=="admin"]
+
+    idAdmin = [user['id'] for user in usuariosAdmin]
+
+    if not usuariosAdmin:
+        input("Presione 'enter' para contiuar...")
+        print()
+        print("No existen usuarios con el rol de administrador aparte de usted.\n")
+        return False
+    else:
+        input("Presione 'enter' para ver la lista de admins")
+        print()
+        for usuario in usuariosAdmin:
+            print("-----------------------------")
+            print(f"ID del usuario admin: {usuario['id']}")
+            print(f"Nombre del usuario admin: {usuario['nombre']}")
+            print("-----------------------------\n")
+
+    while True:
+        idSeleccionado = pedir_entero("Ingrese el valor del ID a manejar: ")
+        print()
+        
+        if idSeleccionado in idAdmin:
+            print("Elija entre las opciones:")
+            print(f"1- Revocar el permiso de admin al ID {idSeleccionado}")
+            print("3- Cancelar operacion sin cambios en los saldos.")
+
+            opcion = pedir_entero("Ingrese la opcion seleccionada (1-2): ", 1, 2)
+            print()
+
+
+            if opcion == 1:
+                usuarioAceptado = next((usuario for usuario in usuarios if usuario['id'] == idSeleccionado),None)
+                usuarios.remove(usuarioAceptado)
+                usuario['rol'] = "user"
+                usuarios.append(usuarioAceptado)
+                guardar_usuario(usuarios)
+                print(f"Se revoco el permiso de admin del ID {idSeleccionado} con exito\n")
+                print("Volviendo al menu de administrador...\n")
+                break
+
+            elif opcion == 2:
+                print("Volviendo al menu de administrador sin cambios...\n")
+                break
+
+
+        else:
+            print("Debe elegir un ID de la lista, intente nuevamente...\n")
+            continue
+
 # Funcion main principal
 def main():
     """
@@ -718,51 +780,68 @@ def main():
                 else:
                     print(f"Saldo pendiente: ${USUARIO_ACTUAL['saldo_pendiente']}\n")
                 print("1- Ver subastastas disponibles")
-                print("2- Crear subasta")
-                print("3- Generar informe")
-                print("4- Gestionar cargas de dinero")
-                print("5- Gestionar nuevos admins") 
-                print("6- Reactivar subastas") 
-                print("7- Cerrar Sesion")
+                print("2- Registrar puja")
+                print("3- Crear subasta")
+                print("4- Generar informe")
+                print("5- Gestionar cargas de dinero")
+                print("6- Gestionar nuevos admins") 
+                print("7- Revocar permisos de admins")
+                print("8- Reactivar subastas") 
+                print("9- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-7): ", 1, 7)
+                opcion = pedir_entero("Ingrese una opcion valida (1-9): ", 1, 9)
 
                 if opcion == 1:
                     print()
                     mostrar_subastas()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
-                
+
                 elif opcion == 2:
+                    print()
+                    if USUARIO_ACTUAL['saldo'] == 0:
+                        print("Su saldo es 0, no puede ofertar en ninguna subasta.")
+                    else:
+                        registrar_puja()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+                
+                elif opcion == 3:
                     print()
                     crear_subasta()
 
-                elif opcion == 3:
+                elif opcion == 4:
                     print()
                     generar_informe()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 4:
+                elif opcion == 5:
                     print()
                     solicitudes_dinero()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
                     pass
 
-                elif opcion == 5: 
+                elif opcion == 6: 
                     print()
                     gestionar_nuevos_admins()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
+
+                elif opcion == 7:
+                    print()
+                    revocar_admins()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
                 
-                elif opcion == 6: 
+                elif opcion == 8: 
                     print()
                     reactivar_subasta()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 7:
+                elif opcion == 9:
                     print()
                     cerrar_sesion()
                 

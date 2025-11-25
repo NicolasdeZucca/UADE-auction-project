@@ -13,6 +13,6 @@
         "password": "Juan123!",
         "saldo": 0,
         "saldo_pendiente": 0,
-        "rol": "user"
+        "rol": "admin"
     }
 ]
