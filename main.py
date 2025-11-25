@@ -461,7 +461,7 @@ def reactivar_subasta():
 
     # se define nueva duración 
     print("\nindique la duracion para la nueva ronda.")
-    duracion_min = pedir_entero("Ingrese la duracion en min: ", 1)
+    duracion_min = pedir_entero("Ingrese la duracion en min: ", 10)
     
     # se calcula la fecha
     ahora = datetime.now()
