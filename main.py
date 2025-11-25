@@ -127,6 +127,10 @@ def registrar_puja():
         print("No puedes volver a pujar hasta que alguien te supere.\n")
         return False
     
+    if subasta_elegida["estado"] != "activa":
+        print("La subasta ya finalizó. No se pueden registrar nuevas pujas.\n")
+        return False
+    
     subasta_id = subasta_elegida["id"]
  
     # El monto debe ser numerico y positivo
