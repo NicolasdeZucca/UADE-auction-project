@@ -35,6 +35,7 @@ def registrar_usuario():
     while True:
         nombre = input("Ingrese su nombre de usuario (o 'salir' para volver atras): ")
         print()
+        nombre = nombre.strip()
 
         if nombre.strip().lower() == "salir":
             print("Volviendo al menu de inicio...\n")
@@ -49,6 +50,7 @@ def registrar_usuario():
                 while True:
                     contrasena = input(f"Ingrese la contrasena de '{nombre}' para registrar el usuario (o 'salir' para volver atras): ")
                     print()
+                    contrasena = contrasena.strip()
 
                     if contrasena.strip().lower() == "salir":
                         print("Volviendo al menu de inicio...\n")
