@@ -632,6 +632,8 @@ def revocar_admins():
 
     usuariosAdmin = [user for user in usuariosMenosActual if user['rol']=="admin"]
 
+    idAdmin = [user['id'] for user in usuariosAdmin]
+
     if not usuariosAdmin:
         input("Presione 'enter' para contiuar...")
         print()
@@ -650,7 +652,7 @@ def revocar_admins():
         idSeleccionado = pedir_entero("Ingrese el valor del ID a manejar: ")
         print()
         
-        if idSeleccionado in idConSolicitud:
+        if idSeleccionado in idAdmin:
             print("Elija entre las opciones:")
             print(f"1- Revocar el permiso de admin al ID {idSeleccionado}")
             print("3- Cancelar operacion sin cambios en los saldos.")
