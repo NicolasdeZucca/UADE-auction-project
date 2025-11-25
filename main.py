@@ -578,6 +578,11 @@ def solicitudes_dinero():
         print()
         
         if idSeleccionado in idConSolicitud:
+            if idSeleccionado == USUARIO_ACTUAL['id']:
+                print("Usted no puede aceptar su propia solicitud.")
+                print("Volviendo al menu de administrador...\n")
+                break
+
             print("Elija entre las opciones:")
             print(f"1- Aceptar la solicitud del ID {idSeleccionado}")
             print(f"2- Denegar la solicitud del ID {idSeleccionado}")

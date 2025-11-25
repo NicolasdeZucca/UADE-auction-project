@@ -211,14 +211,14 @@ def validar_monto_subasta(monto, subasta, usuarioActual):
         return False
 
     if subasta["monto_actual"] == 0:
-        while monto <= subasta["costo_inicial"] or monto > saldo:
-            print(f"La oferta debe ser mayor al costo inicial: {subasta["costo_inicial"]} y menor a su saldo: ${saldo}.\n")
+        while monto < subasta["costo_inicial"] or monto > saldo:
+            print(f"La oferta debe ser mayor o igual al costo inicial: {subasta["costo_inicial"]} y menor o igual a su saldo: ${saldo}.\n")
             monto = pedir_entero("Ingrese un monto a ofertar nuevamente: ", subasta["costo_inicial"])
             print()
         return monto
 
     while monto <= subasta["monto_actual"] or monto > saldo:
-        print(f"La oferta debe ser mayor al precio vigente: {subasta["monto_actual"]} y menor a su saldo: ${saldo}.\n")
+        print(f"La oferta debe ser mayor al precio vigente: {subasta["monto_actual"]} y menor o igual a su saldo: ${saldo}.\n")
         monto = pedir_entero("Ingrese una nueva oferta: ", subasta["monto_actual"])
         print()
     
