@@ -131,6 +131,14 @@ def registrar_puja():
         return False
     
     subasta_id = subasta_elegida["id"]
+
+    if subasta_elegida['monto_actual'] == 0:
+        if USUARIO_ACTUAL['saldo'] < subasta_elegida['costo_inicial']:
+            print("Su saldo no cubre el costo inicial de esta subasta\n")
+            return False
+    elif USUARIO_ACTUAL['saldo'] <= subasta_elegida['monto_actual']:
+        print("Su saldo no supera el monto actual de la ultima puja en esta subasta.\n")
+        return False
  
     # El monto debe ser numerico y positivo
     try:
@@ -670,7 +678,10 @@ def main():
         
                 elif opcion == 2:
                     print()
-                    registrar_puja()
+                    if USUARIO_ACTUAL['saldo'] == 0:
+                        print("Su saldo es 0, no puede ofertar en ninguna subasta.")
+                    else:
+                        registrar_puja()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
