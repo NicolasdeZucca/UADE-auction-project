@@ -208,9 +208,9 @@ def generar_informe():
                 fin = sub.get("fecha_fin")
 
                
-                dt_inicio = datetime.fromisoformat(inicio)
-                dt_fin = datetime.fromisoformat(fin)
-                duracion_minutos = int((dt_fin - dt_inicio).total_seconds() // 60)
+                fechaInicio = datetime.fromisoformat(inicio)
+                FechaFin = datetime.fromisoformat(fin)
+                duracion_minutos = int((FechaFin - fechaInicio).total_seconds() // 60)
                 
 
                 # Pujas de esta subasta
