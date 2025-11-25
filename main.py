@@ -12,7 +12,7 @@ from data.usuarios             import obtener_usuarios, crear_usuario, guardar_u
 from data.pujas                import obtener_pujas, registrar_usuario_puja, guardar_puja
 from data.JSONs                import leer_archivo
 from config.config             import PATH_PUJAS, PATH_SUBASTAS, PATH_USUARIOS
-from utilidades.utils          import pedir_entero, limpiar
+from utilidades.utils          import pedir_entero
 from data.JSONs                import leer_archivo
 from typing                    import Dict, Any
 from validaciones.validaciones import validarNombre, validarContrasena, usuario_existe, validar_credenciales, validar_monto_subasta
