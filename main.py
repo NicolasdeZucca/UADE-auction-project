@@ -450,12 +450,11 @@ def main():
                 print(f"ID: {USUARIO_ACTUAL['id']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
-                print("3- Generar informe")
-                print("4- Solicitar ser Admin")
-                print("5- Cerrar Sesion")
+                print("3- Solicitar ser Admin")
+                print("4- Cerrar Sesion")
                  
             
-                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
+                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 4)
             
                 if opcion == 1:
                     print()
@@ -471,16 +470,10 @@ def main():
 
                 elif opcion == 3:
                     print()
-                    generar_informe()
-                    input("\nPresione 'enter' para volver al menu principal")
-                    print()
-                
-                elif opcion == 4:
-                    print()
                     solicitar_rol_admin()
                     input("\nPresione 'enter' para volver al menu principal")
-
-                elif opcion == 5:
+                
+                elif opcion == 4:
                     print()
                     cerrar_sesion()
             
