@@ -757,7 +757,6 @@ def main():
                     solicitar_dinero()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
-                    pass
 
                 elif opcion == 4:
                     print()
@@ -782,15 +781,16 @@ def main():
                     print(f"Saldo pendiente: ${USUARIO_ACTUAL['saldo_pendiente']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
-                print("3- Crear subasta")
-                print("4- Generar informe")
-                print("5- Gestionar cargas de dinero")
-                print("6- Gestionar nuevos admins") 
-                print("7- Revocar permisos de admins")
-                print("8- Reactivar subastas") 
-                print("9- Cerrar Sesion")
+                print("3- Solicitar dinero")
+                print("4- Crear subasta")
+                print("5- Generar informe")
+                print("6- Gestionar cargas de dinero")
+                print("7- Gestionar nuevos admins") 
+                print("8- Revocar permisos de admins")
+                print("9- Reactivar subastas") 
+                print("10- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-9): ", 1, 9)
+                opcion = pedir_entero("Ingrese una opcion valida (1-10): ", 1, 10)
 
                 if opcion == 1:
                     print()
@@ -806,43 +806,49 @@ def main():
                         registrar_puja()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
-                
+
                 elif opcion == 3:
+                    print()
+                    solicitar_dinero()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+                
+                elif opcion == 4:
                     print()
                     crear_subasta()
 
-                elif opcion == 4:
+                elif opcion == 5:
                     print()
                     generar_informe()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 5:
+                elif opcion == 6:
                     print()
                     solicitudes_dinero()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
                     pass
 
-                elif opcion == 6: 
+                elif opcion == 7: 
                     print()
                     gestionar_nuevos_admins()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 7:
+                elif opcion == 8:
                     print()
                     revocar_admins()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
                 
-                elif opcion == 8: 
+                elif opcion == 9: 
                     print()
                     reactivar_subasta()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 9:
+                elif opcion == 10:
                     print()
                     cerrar_sesion()
                 
