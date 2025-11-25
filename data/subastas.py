@@ -4,7 +4,7 @@
  
 from config.config             import PATH_SUBASTAS
 from data.JSONs                import leer_archivo, escribir_archivo
-from utilidades.utils          import pedir_entero
+from utilidades.utils          import pedir_entero, calcular_tiempo_restante, actualizar_estado_por_tiempo
 from validaciones.validaciones import validar_id_subasta, validarNombreSubasta, validarNombreCategoria, validarDescSubasta
 from datetime                  import datetime, timedelta
 import random
@@ -12,6 +12,15 @@ import random
  
 def obtener_subastas():
     subastas = leer_archivo(PATH_SUBASTAS)
+    cambio = False
+
+    for s in subastas:
+        if actualizar_estado_por_tiempo(s):
+            cambio = True
+
+    if cambio:
+        escribir_archivo(PATH_SUBASTAS, subastas)
+        
     return subastas
  
  
@@ -35,6 +44,10 @@ def mostrar_subastas():
         print(f"Subasta ID: {sub.get('id')}")
         print(f"Nombre: {sub.get('nombre')}")
         print(f"Costo inicial: {sub.get('costo_inicial')}")
+        if sub["estado"] == "activa":
+            print(f"Tiempo restante: {calcular_tiempo_restante(sub)}")
+        else:
+            print("Estado: FINALIZADA")
         if sub['monto_actual'] == 0:
             print("Todavia no hay pujas en esta subasta.")
         else:
