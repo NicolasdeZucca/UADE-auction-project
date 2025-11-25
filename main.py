@@ -401,8 +401,9 @@ def main():
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
                 print("3- Generar informe")
-                print("4- Cerrar Sesion")
-                print("5- Solicitar ser Admin") 
+                print("4- Solicitar ser Admin")
+                print("5- Cerrar Sesion")
+                 
             
                 opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
             
@@ -423,15 +424,15 @@ def main():
                     generar_informe()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
-
-                elif opcion == 4:
-                    print()
-                    cerrar_sesion()
                 
-                elif opcion == 5:
+                elif opcion == 4:
                     print()
                     solicitar_rol_admin()
                     input("\nPresione 'enter' para volver al menu principal")
+
+                elif opcion == 5:
+                    print()
+                    cerrar_sesion()
             
             else:
                 print("------------------")
