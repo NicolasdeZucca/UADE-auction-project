@@ -243,6 +243,88 @@ def generar_informe():
         print("--------------------------------")
     except Exception as e: 
         print(f"No se pudo leer el archivo generado: {e}")
+def solicitar_rol_admin():
+    """
+    permite a un usuario normal solicitar permisos de administrador
+    """
+    global USUARIO_ACTUAL
+    print("\n--- SOLICITUD DE ADMINISTRADOR ---")
+    
+    usuarios = obtener_usuarios()
+    
+    for usuario in usuarios:# se busca al usuario actual en la lista para modificarlo
+        if usuario["id"] == USUARIO_ACTUAL["id"]:
+            
+            if usuario.get("solicitud_admin") is True:
+                print("Ya has enviado una solicitud previamente, espera a que un administrador la apruebe")
+                return
+
+            confirmacion = input("estas seguro que deseas solicitar permisos de Administrador? (si/no): ")
+            if confirmacion == "si":
+                usuario["solicitud_admin"] = True
+                guardar_usuario(usuarios)
+                print("Solicitud enviada con éxito, espera a que un admin revise tu peticion")
+                # se actualiza la variable global para reflejar el cambio en memoria
+                USUARIO_ACTUAL = usuario 
+            else:
+                print("Operación cancelada.")
+            return
+
+def gestionar_nuevos_admins():
+    """
+    Funcion para el ADMIN.
+    Lista los usuarios que pidieron ser admin y permite aprobarlos.
+    """
+    print("\n--- GESTIÓN DE SOLICITUDES DE ADMIN ---")
+    
+    usuarios = obtener_usuarios()
+    
+    # Filtramos los usuarios que tienen la solicitud activa
+    candidatos = [usuario for usuario in usuarios if usuario.get("solicitud_admin") is True]
+    
+    if not candidatos:
+        print("no hay solicitudes pendientes en este momento.")
+        return
+
+    print(f"Hay {len(candidatos)} solicitudes pendientes:\n")
+    for u in candidatos:
+        print(f"ID: {u['id']} | Usuario: {u['nombre']}")
+    
+    print("\nIngrese el ID del usuario al que desea DARLE PERMISOS de Administrador.")
+    print("(O ingrese '0' para volver atrás)")
+    
+    try:
+        id_elegido = pedir_entero("ID de usuario a aprobar: ")
+        
+        if id_elegido == 0:
+            return
+
+        usuario_a_modificar = None
+        
+        #se busca el usuario en la lista principal 
+        for usuario in usuarios:
+            if usuario["id"] == id_elegido and usuario.get("solicitud_admin") is True:
+                usuario_a_modificar = usuario
+                break
+        
+        if usuario_a_modificar:
+            confirmar = input(f"¿Convertir a {usuario_a_modificar['nombre']} en ADMIN? (si/no): ")
+            if confirmar == "si":
+                #se cambia el rol
+                usuario_a_modificar["rol"] = "admin"
+                #se borra la solicitud
+                del usuario_a_modificar["solicitud_admin"]
+                
+                guardar_usuario(usuarios)
+                print(f"El usuario {usuario_a_modificar['nombre']} ahora es Administrador.")
+            else:
+                print("Operación cancelada.")
+        else:
+            print("ID no es correcto o el usuario NO tiene una solicitud pendiente.")
+            
+    except Exception as e:
+        print(f"Ocurrió un error: {e}")
+
 def cerrar_sesion():
     global USUARIO_ACTUAL
 
@@ -266,11 +348,6 @@ def main():
             print("\n\n-------------------------")
             print("BIENVENIDO A SUBASTAS.COM")
             print("-------------------------\n")
-
-            print("----------------")
-            print("PAGINA DE INICIO")
-            print("----------------\n")
-
             print("1- Registrarse")
             print("2- Iniciar sesion")
             print("3- Salir")
@@ -279,8 +356,7 @@ def main():
 
             if opcion == 1:
                 print()
-                registrar_usuario()
-
+                registrar_usuario() 
             elif opcion == 2:
                 print()
                 login()
@@ -298,14 +374,15 @@ def main():
                 print("MENU PRINCIPAL")
                 print("--------------\n")
 
-                print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
-                print(f"ID: {USUARIO_ACTUAL["id"]}\n")
+                print(f"Usuario: {USUARIO_ACTUAL['nombre']}")
+                print(f"ID: {USUARIO_ACTUAL['id']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
                 print("3- Generar informe")
                 print("4- Cerrar Sesion")
+                print("5- Solicitar ser Admin") 
             
-                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 4)
+                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
             
                 if opcion == 1:
                     print()
@@ -328,21 +405,26 @@ def main():
                 elif opcion == 4:
                     print()
                     cerrar_sesion()
+                
+                elif opcion == 5:
+                    print()
+                    solicitar_rol_admin()
+                    input("\nPresione 'enter' para volver al menu principal")
             
             else:
                 print("------------------")
                 print("MENU ADMINISTRADOR")
                 print("------------------\n")
 
-                print(f"Usuario: {USUARIO_ACTUAL["nombre"]}")
-                print(f"ID: {USUARIO_ACTUAL["id"]}\n")
+                print(f"Usuario: {USUARIO_ACTUAL['nombre']}")
+                print(f"ID: {USUARIO_ACTUAL['id']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Crear subasta")
                 print("3- Generar informe")
-                print("4- Dar rol de admin")
+                print("4- Gestionar nuevos admins") 
                 print("5- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 5)
+                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
 
                 if opcion == 1:
                     print()
@@ -360,8 +442,11 @@ def main():
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 4:
-                    pass
+                elif opcion == 4: 
+                    print()
+                    gestionar_nuevos_admins()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
 
                 elif opcion == 5:
                     print()
