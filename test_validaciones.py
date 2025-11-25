@@ -82,8 +82,8 @@ def test_credenciales_usuario_inexistente_mock():
 def test_monto_subasta_cero_es_invalido():
     """prueba que un monto de 0 sea rechazado"""
     subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
-    
-    resultado = validar_monto_subasta(0, subasta_mock)
+    usuario_mock = {"saldo": 5000}
+    resultado = validar_monto_subasta(0, subasta_mock, usuario_mock)
     assert resultado is False
 
 def test_monto_valido_inicial():
@@ -91,8 +91,8 @@ def test_monto_valido_inicial():
     prueba una oferta valida inicial (mayor al costo base).
     """
     subasta_mock = {"costo_inicial": 100, "monto_actual": 0}
-    
-    resultado = validar_monto_subasta(150, subasta_mock)
+    usuario_mock = {"saldo": 5000}
+    resultado = validar_monto_subasta(150, subasta_mock, usuario_mock)
     assert resultado == 150
 
 def test_monto_valido_supera_puja():
@@ -100,6 +100,6 @@ def test_monto_valido_supera_puja():
     prueba una oferta valida que supera la puja actual
     """
     subasta_mock = {"costo_inicial": 100, "monto_actual": 200}
-    
-    resultado = validar_monto_subasta(300, subasta_mock)
+    usuario_mock = {"saldo": 5000}
+    resultado = validar_monto_subasta(300, subasta_mock,usuario_mock)
     assert resultado == 300
