@@ -262,10 +262,11 @@ def solicitar_rol_admin():
             while True:
                 confirmacion = input("estas seguro que deseas solicitar permisos de Administrador? (si/no): ").lower().strip()
             
-            if confirmacion == "si" or confirmacion == "no":
-                break
-            else:
-                print("Opción no válida. Por favor escribe 'si' o 'no'.\n")
+                if confirmacion == "si" or confirmacion == "no":
+                    break
+                else:
+                    print("Opción no válida. Por favor escribe 'si' o 'no'.\n")
+
             if confirmacion == 'si':
                 usuario["solicitud_admin"] = True
                 guardar_usuario(usuarios)
@@ -299,37 +300,48 @@ def gestionar_nuevos_admins():
     print("\nIngrese el ID del usuario al que desea DARLE PERMISOS de Administrador.")
     print("(O ingrese '0' para volver atrás)")
     
-    try:
-        id_elegido = pedir_entero("ID de usuario a aprobar: ")
-        
-        if id_elegido == 0:
-            return
-
-        usuario_a_modificar = None
-        
-        #se busca el usuario en la lista principal 
-        for usuario in usuarios:
-            if usuario["id"] == id_elegido and usuario.get("solicitud_admin") is True:
-                usuario_a_modificar = usuario
-                break
-        
-        if usuario_a_modificar:
-            confirmar = input(f"¿Convertir a {usuario_a_modificar['nombre']} en ADMIN? (si/no): ")
-            if confirmar == "si":
-                #se cambia el rol
-                usuario_a_modificar["rol"] = "admin"
-                #se borra la solicitud
-                del usuario_a_modificar["solicitud_admin"]
-                
-                guardar_usuario(usuarios)
-                print(f"El usuario {usuario_a_modificar['nombre']} ahora es Administrador.")
-            else:
-                print("Operación cancelada.")
-        else:
-            print("ID no es correcto o el usuario NO tiene una solicitud pendiente.")
+    while True:
+        try:
+            id_elegido = pedir_entero("ID de usuario a aprobar: ")
             
-    except Exception as e:
-        print(f"Ocurrió un error: {e}")
+            if id_elegido == 0:
+                return
+
+            usuario_a_modificar = None
+            
+            #se busca el usuario en la lista principal 
+            for usuario in usuarios:
+                if usuario["id"] == id_elegido and usuario.get("solicitud_admin") is True:
+                    usuario_a_modificar = usuario
+                    break
+            
+            if usuario_a_modificar:
+                while True:
+                    try:
+                        confirmar = input(f"¿Convertir a {usuario_a_modificar['nombre']} en ADMIN? (si/no): ").strip().lower()
+                        if confirmar == "si" or confirmar == "no":
+                            break
+                    except Exception as e:
+                        print("Debe ingresar un id o '0', intente nuevamente...")
+
+                if confirmar == "si":
+                    #se cambia el rol
+                    usuario_a_modificar["rol"] = "admin"
+                    #se borra la solicitud
+                    del usuario_a_modificar["solicitud_admin"]
+                    
+                    guardar_usuario(usuarios)
+                    print(f"El usuario {usuario_a_modificar['nombre']} ahora es Administrador.")
+                    return
+                else:
+                    print("Operación cancelada.")
+                    return
+            else:
+                print("ID no es correcto o el usuario NO tiene una solicitud pendiente.")
+                continue
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
 
 def cerrar_sesion():
     global USUARIO_ACTUAL
