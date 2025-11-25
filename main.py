@@ -628,9 +628,9 @@ def revocar_admins():
 
     usuarios = obtener_usuarios()
 
-    usuariosMenosActual = usuarios.remove(USUARIO_ACTUAL)
+    usuarios.remove(USUARIO_ACTUAL)
 
-    usuariosAdmin = [user for user in usuariosMenosActual if user['rol']=="admin"]
+    usuariosAdmin = [user for user in usuarios if user['rol']=="admin"]
 
     idAdmin = [user['id'] for user in usuariosAdmin]
 
@@ -655,7 +655,7 @@ def revocar_admins():
         if idSeleccionado in idAdmin:
             print("Elija entre las opciones:")
             print(f"1- Revocar el permiso de admin al ID {idSeleccionado}")
-            print("3- Cancelar operacion sin cambios en los saldos.")
+            print("3- Cancelar operacion sin cambios en los roles.")
 
             opcion = pedir_entero("Ingrese la opcion seleccionada (1-2): ", 1, 2)
             print()
@@ -666,6 +666,7 @@ def revocar_admins():
                 usuarios.remove(usuarioAceptado)
                 usuario['rol'] = "user"
                 usuarios.append(usuarioAceptado)
+                usuarios.append(USUARIO_ACTUAL)
                 guardar_usuario(usuarios)
                 print(f"Se revoco el permiso de admin del ID {idSeleccionado} con exito\n")
                 print("Volviendo al menu de administrador...\n")
