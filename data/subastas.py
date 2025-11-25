@@ -74,7 +74,6 @@ def elegir_subasta():
     subastas = obtener_subastas()
     
     if not subastas:
-        print("No hay subastas disponibles. \n")
         return None
  
     while True:
