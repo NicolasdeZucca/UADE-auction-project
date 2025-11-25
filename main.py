@@ -310,6 +310,7 @@ def solicitar_rol_admin():
             
             while True:
                 confirmacion = input("estas seguro que deseas solicitar permisos de Administrador? (si/no): ").lower().strip()
+                print()
             
                 if confirmacion == "si" or confirmacion == "no":
                     break
@@ -319,11 +320,11 @@ def solicitar_rol_admin():
             if confirmacion == 'si':
                 usuario["solicitud_admin"] = True
                 guardar_usuario(usuarios)
-                print("Solicitud enviada con éxito, espera a que un admin revise tu peticion")
+                print("Solicitud enviada con éxito, espera a que un admin revise tu peticion\n")
                 # se actualiza la variable global para reflejar el cambio en memoria
                 USUARIO_ACTUAL = usuario 
             else:
-                print("Operación cancelada.")
+                print("Operación cancelada.\n")
             return
 
 def gestionar_nuevos_admins():
@@ -331,7 +332,7 @@ def gestionar_nuevos_admins():
     Funcion para el ADMIN.
     Lista los usuarios que pidieron ser admin y permite aprobarlos.
     """
-    print("\n--- GESTIÓN DE SOLICITUDES DE ADMIN ---")
+    print("\n--- GESTIÓN DE SOLICITUDES DE ADMIN ---\n")
     
     usuarios = obtener_usuarios()
     
@@ -339,7 +340,7 @@ def gestionar_nuevos_admins():
     candidatos = [usuario for usuario in usuarios if usuario.get("solicitud_admin") is True]
     
     if not candidatos:
-        print("no hay solicitudes pendientes en este momento.")
+        print("no hay solicitudes pendientes en este momento.\n")
         return
 
     print(f"Hay {len(candidatos)} solicitudes pendientes:\n")
@@ -347,11 +348,12 @@ def gestionar_nuevos_admins():
         print(f"ID: {u['id']} | Usuario: {u['nombre']}")
     
     print("\nIngrese el ID del usuario al que desea DARLE PERMISOS de Administrador.")
-    print("(O ingrese '0' para volver atrás)")
+    print("(O ingrese '0' para volver atrás)\n")
     
     while True:
         try:
             id_elegido = pedir_entero("ID de usuario a aprobar: ")
+            print()
             
             if id_elegido == 0:
                 return
@@ -368,10 +370,12 @@ def gestionar_nuevos_admins():
                 while True:
                     try:
                         confirmar = input(f"¿Convertir a {usuario_a_modificar['nombre']} en ADMIN? (si/no): ").strip().lower()
+                        print()
+
                         if confirmar == "si" or confirmar == "no":
                             break
                     except Exception as e:
-                        print("Debe ingresar un id o '0', intente nuevamente...")
+                        print("Debe ingresar un id o '0', intente nuevamente...\n")
 
                 if confirmar == "si":
                     #se cambia el rol
@@ -380,17 +384,17 @@ def gestionar_nuevos_admins():
                     del usuario_a_modificar["solicitud_admin"]
                     
                     guardar_usuario(usuarios)
-                    print(f"El usuario {usuario_a_modificar['nombre']} ahora es Administrador.")
+                    print(f"El usuario {usuario_a_modificar['nombre']} ahora es Administrador.\n")
                     return
                 else:
-                    print("Operación cancelada.")
+                    print("Operación cancelada.\n")
                     return
             else:
-                print("ID no es correcto o el usuario NO tiene una solicitud pendiente.")
+                print("ID no es correcto o el usuario NO tiene una solicitud pendiente.\n")
                 continue
 
         except Exception as e:
-            print(f"Ocurrió un error: {e}")
+            print(f"Ocurrió un error: {e}\n")
 
 def cerrar_sesion():
     global USUARIO_ACTUAL
@@ -489,6 +493,15 @@ def reactivar_subasta():
     subastas.append(nueva_subasta)
     guardar_subastas(subastas)
     print(f"\nexito: subasta reactivada con el NUEVO ID: {nuevo_id}")
+
+def solicitar_dinero():
+
+    
+    pass
+
+def solicitudes_dinero():
+    pass
+
 # Funcion main principal
 def main():
     """
@@ -533,8 +546,9 @@ def main():
                 print(f"ID: {USUARIO_ACTUAL['id']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
-                print("3- Solicitar ser Admin")
-                print("4- Cerrar Sesion")
+                print("3- Solicitar carga de dinero")
+                print("4- Solicitar ser Admin")
+                print("5- Cerrar Sesion")
                  
             
                 opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 4)
@@ -553,10 +567,17 @@ def main():
 
                 elif opcion == 3:
                     print()
+                    solicitar_dinero()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+                    pass
+
+                elif opcion == 4:
+                    print()
                     solicitar_rol_admin()
                     input("\nPresione 'enter' para volver al menu principal")
                 
-                elif opcion == 4:
+                elif opcion == 5:
                     print()
                     cerrar_sesion()
             
@@ -570,11 +591,12 @@ def main():
                 print("1- Ver subastastas disponibles")
                 print("2- Crear subasta")
                 print("3- Generar informe")
-                print("4- Gestionar nuevos admins") 
-                print("5- Reactivar subastas") 
-                print("6- Cerrar Sesion")
+                print("4- Gestionar cargas de dinero")
+                print("5- Gestionar nuevos admins") 
+                print("6- Reactivar subastas") 
+                print("7- Cerrar Sesion")
 
-                opcion = pedir_entero("Ingrese una opcion valida (1-6): ", 1, 6)
+                opcion = pedir_entero("Ingrese una opcion valida (1-7): ", 1, 7)
 
                 if opcion == 1:
                     print()
@@ -592,19 +614,27 @@ def main():
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 4: 
+                elif opcion == 4:
+                    print()
+                    print("Funcionalidad no implementada hasta el momento")
+                    solicitudes_dinero()
+                    input("\nPresione 'enter' para volver al menu principal")
+                    print()
+                    pass
+
+                elif opcion == 5: 
                     print()
                     gestionar_nuevos_admins()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
                 
-                elif opcion == 5: 
+                elif opcion == 6: 
                     print()
                     reactivar_subasta()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
 
-                elif opcion == 6:
+                elif opcion == 7:
                     print()
                     cerrar_sesion()
                 

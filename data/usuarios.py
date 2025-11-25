@@ -22,6 +22,7 @@ def crear_usuario(nombre, password):
         "id": generate_ID(),
         "nombre": nombre,
         "password": password,
+        "saldo" : 0,
         "rol": "user"
         }
  

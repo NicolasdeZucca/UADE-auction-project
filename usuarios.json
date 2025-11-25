@@ -3,18 +3,7 @@
         "id": 1,
         "nombre": "admin",
         "password": "123",
+        "saldo": 0,
         "rol": "admin"
-    },
-    {
-        "id": 8946,
-        "nombre": "Hola",
-        "password": "Hola123!",
-        "rol": "user"
-    },
-    {
-        "id": 9864,
-        "nombre": "Nico",
-        "password": "Nico123!",
-        "rol": "user"
     }
 ]
