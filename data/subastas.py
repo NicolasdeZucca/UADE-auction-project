@@ -32,7 +32,8 @@ def mostrar_subastas():
     Returns:
         list: lista de subastas
     """
-    subastas = leer_archivo(PATH_SUBASTAS)
+    subastas = obtener_subastas()
+    
    
     if not subastas:
         print("No hay subastas disponibles. \n")
@@ -40,20 +41,22 @@ def mostrar_subastas():
  
     print("\nSubastas disponibles:\n")
     for sub in subastas:
-        print("-------------------------------------------")
-        print(f"Subasta ID: {sub.get('id')}")
-        print(f"Nombre: {sub.get('nombre')}")
-        print(f"Costo inicial: {sub.get('costo_inicial')}")
+        # solo mostramos las subastas activas
         if sub["estado"] == "activa":
-            print(f"Tiempo restante: {calcular_tiempo_restante(sub)}")
-        else:
-            print("Estado: FINALIZADA")
-        if sub['monto_actual'] == 0:
-            print("Todavia no hay pujas en esta subasta.")
-        else:
-            print(f"Puja actual: {sub.get('monto_actual')}")
-            print(f"Ganador de puja actual: {sub.get('ganador')}")
-        print("-------------------------------------------\n")
+            print("-------------------------------------------")
+            print(f"Subasta ID: {sub.get('id')}")
+            print(f"Nombre: {sub.get('nombre')}")
+            print(f"Costo inicial: {sub.get('costo_inicial')}")
+            if sub["estado"] == "activa":
+                print(f"Tiempo restante: {calcular_tiempo_restante(sub)}")
+            else:
+                print("Estado: FINALIZADA")
+            if sub['monto_actual'] == 0:
+                print("Todavia no hay pujas en esta subasta.")
+            else:
+                print(f"Puja actual: {sub.get('monto_actual')}")
+                print(f"Ganador de puja actual: {sub.get('ganador')}")
+            print("-------------------------------------------\n")
  
  
 def guardar_subastas(subasta):
@@ -68,7 +71,7 @@ def elegir_subasta():
     Args:
         subastas (list): lista de subastas existentes.
     """
-    subastas = leer_archivo(PATH_SUBASTAS)
+    subastas = obtener_subastas()
     
     if not subastas:
         print("No hay subastas disponibles. \n")
