@@ -533,7 +533,7 @@ def solicitar_dinero():
 
     usuarios.remove(USUARIO_ACTUAL)
 
-    USUARIO_ACTUAL["saldo_pendiente"]=dineroTransferido
+    USUARIO_ACTUAL["saldo_pendiente"]+=dineroTransferido
 
     usuarios.append(USUARIO_ACTUAL)
 
