@@ -23,6 +23,7 @@ def crear_usuario(nombre, password):
         "nombre": nombre,
         "password": password,
         "saldo" : 0,
+        "saldo_pendiente": 0,
         "rol": "user"
         }
  

@@ -495,12 +495,109 @@ def reactivar_subasta():
     print(f"\nexito: subasta reactivada con el NUEVO ID: {nuevo_id}")
 
 def solicitar_dinero():
+    """
+    Realiza todo el proceso para solicitar carga de dinero con sus validaciones.
+    """
+    global USUARIO_ACTUAL
 
+    usuarios = obtener_usuarios()
+
+    print("--- SOLICITUD DE DINERO ---\n")
+
+    print("Para cargar dinero debe realizar una transferencia al alias: SUBASTAS.COM.MP")
+    print("Luego debe ingresar el valor del deposito y el Nro de comprobante de la transferencia y esperar a la confirmacion de un administrador. \n")
+
+    while True:
+        dineroTransferido = pedir_entero("Ingrese el valor de la transferencia (minimo de transferencia: $5000): $", 5000)
+        print()
+
+        nroComprobante = pedir_entero("ingrese el Nro de comprobante (entre 1000-9999): Nro-", 1000,9999)
+        print()
+
+        break
+
+    usuarios.remove(USUARIO_ACTUAL)
+
+    USUARIO_ACTUAL["saldo_pendiente"]=dineroTransferido
+
+    usuarios.append(USUARIO_ACTUAL)
+
+    guardar_usuario(usuarios)
+
+    print(f"Su solicitud de ${dineroTransferido} ha sido enviada, espere a que un administrador la acepte,\n")
     
-    pass
+    
 
 def solicitudes_dinero():
-    pass
+    """
+    Realiza todo el proceso de aceptar o denegar una solicitud de dinero
+    """
+
+    usuarios = obtener_usuarios()
+
+    usuariosConSolicitud = [user for user in usuarios if user['saldo_pendiente'] != 0]
+
+    idConSolicitud = [user['id'] for user in usuariosConSolicitud]
+
+    print("--- SOLICITUDES DE DINERO ---\n")
+
+    print("Usted obtendra una lista con los usuarios que tienen pendiente una solicitud de dinero.")
+    print("La lista le mostrara el ID y el valor del saldo a aceptar.\n")
+
+    input("Ingrese 'enter' para continuar: ")
+    print()
+
+    for usuario in usuariosConSolicitud:
+
+        print("----------------------")
+        print(f"ID de Usuario: {usuario['id']}")
+        print(f"Saldo a aprobar: ${usuario['saldo_pendiente']}")
+        print("----------------------\n")
+
+    while True:
+        idSeleccionado = pedir_entero("Ingrese el valor del ID a manejar: ")
+        print()
+        
+        if idSeleccionado in idConSolicitud:
+            print("Elija entre las opciones:")
+            print(f"1- Aceptar la solicitud del ID {idSeleccionado}")
+            print(f"2- Denegar la solicitud del ID {idSeleccionado}")
+            print("3- Cancelar operacion sin cambios en los saldos.")
+
+            opcion = pedir_entero("Ingrese la opcion seleccionada (1-3): ", 1, 3)
+            print()
+
+
+            if opcion == 1:
+                usuarioAceptado = next((usuario for usuario in usuarios if usuario['id'] == idSeleccionado),None)
+                usuarios.remove(usuarioAceptado)
+                saldoACargar = usuarioAceptado['saldo_pendiente']
+                usuarioAceptado['saldo'] += saldoACargar
+                usuarioAceptado['saldo_pendiente']=0
+                usuarios.append(usuarioAceptado)
+                guardar_usuario(usuarios)
+                print(f"La solicitud del ID {idSeleccionado}, fue aceptada con exito.\n")
+                print("Volviendo al menu de administrador...\n")
+                break
+
+            elif opcion == 2:
+                usuarioDenegado = next((usuario for usuario in usuarios if usuario['id'] == idSeleccionado),None)
+                usuarios.remove(usuarioDenegado)
+                usuarioDenegado['saldo_pendiente']=0
+                usuarios.append(usuarioDenegado)
+                guardar_usuario(usuarios)
+                print(f"La solicitud del ID {idSeleccionado}, fue denegada con exito.\n")
+                print("Volviendo al menu de administrador...\n")
+                break
+
+            elif opcion == 3:
+                print("Volviendo al menu de administrador sin cambios...\n")
+                break
+
+
+        else:
+            print("Debe elegir un ID de la lista, intente nuevamente...\n")
+            continue
 
 # Funcion main principal
 def main():
@@ -543,7 +640,12 @@ def main():
                 print("--------------\n")
 
                 print(f"Usuario: {USUARIO_ACTUAL['nombre']}")
-                print(f"ID: {USUARIO_ACTUAL['id']}\n")
+                print(f"ID: {USUARIO_ACTUAL['id']}")
+                print(f"Saldo actual: ${USUARIO_ACTUAL['saldo']}")
+                if "saldo_pendiente" not in USUARIO_ACTUAL:
+                    print()
+                else:
+                    print(f"Saldo pendiente: ${USUARIO_ACTUAL['saldo_pendiente']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Registrar puja")
                 print("3- Solicitar carga de dinero")
@@ -587,7 +689,12 @@ def main():
                 print("------------------\n")
 
                 print(f"Usuario: {USUARIO_ACTUAL['nombre']}")
-                print(f"ID: {USUARIO_ACTUAL['id']}\n")
+                print(f"ID: {USUARIO_ACTUAL['id']}")
+                print(f"Saldo actual: ${USUARIO_ACTUAL['saldo']}")
+                if "saldo_pendiente" not in USUARIO_ACTUAL:
+                    print()
+                else:
+                    print(f"Saldo pendiente: ${USUARIO_ACTUAL['saldo_pendiente']}\n")
                 print("1- Ver subastastas disponibles")
                 print("2- Crear subasta")
                 print("3- Generar informe")
@@ -616,7 +723,6 @@ def main():
 
                 elif opcion == 4:
                     print()
-                    print("Funcionalidad no implementada hasta el momento")
                     solicitudes_dinero()
                     input("\nPresione 'enter' para volver al menu principal")
                     print()
