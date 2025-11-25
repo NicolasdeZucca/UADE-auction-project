@@ -551,7 +551,7 @@ def main():
                 print("5- Cerrar Sesion")
                  
             
-                opcion = pedir_entero("Ingrese una opcion valida (1-4): ", 1, 4)
+                opcion = pedir_entero("Ingrese una opcion valida (1-5): ", 1, 5)
             
                 if opcion == 1:
                     print()
