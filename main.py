@@ -136,7 +136,7 @@ def registrar_puja():
     try:
         monto = pedir_entero("Ingrese un monto a ofertar: ")
  
-        monto_validado = validar_monto_subasta(monto, subasta_elegida)
+        monto_validado = validar_monto_subasta(monto, subasta_elegida, USUARIO_ACTUAL)
         
         if not monto_validado: 
             return False
@@ -166,6 +166,13 @@ def registrar_puja():
     
     guardar_puja(pujas)
     print(f"Puja registrada: {USUARIO_ACTUAL['nombre']} ofertó {monto_validado}.")
+
+    
+    usuarios = obtener_usuarios()
+    usuarios.remove(USUARIO_ACTUAL)
+    USUARIO_ACTUAL['saldo'] -= monto_validado
+    usuarios.append(USUARIO_ACTUAL)
+    guardar_usuario(usuarios)
     return True
  
 def generar_informe():

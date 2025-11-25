@@ -11,7 +11,7 @@
         "id": 1254,
         "nombre": "Juan",
         "password": "Juan123!",
-        "saldo": 9500,
+        "saldo": 0,
         "saldo_pendiente": 0,
         "rol": "user"
     }
